@@ -25,7 +25,7 @@ import AdminRoute from "./components/AdminRoutes";
 import AdminDashboardPage from "./pages/admin/AdminDashboard.jsx";
 import EventsAdmin from "./pages/admin/EventsAdmin";
 import EventsEdit from "./pages/admin/EventsEdit";
-import ArticlesAdmin from "./pages/Admin/ArticlesAdmin";
+import ArticlesAdmin from "./pages/admin/ArticlesAdmin.jsx"
 import ArticlesEdit from "./pages/admin/ArticlesEdit";
 import TestimonialsAdmin from "./pages/admin/TestimonialsAdmin";
 import TestimonialsEdit from "./pages/admin/TestimonialsEdit";
