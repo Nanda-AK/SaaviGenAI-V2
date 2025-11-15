@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { eventsAPI } from "../../services/api";
 import AdminSidebar from "../../components/admin/AdminSidebar";
 import AdminHeader from "../../components/admin/AdminHeader";
-import DataTable from "../../components/admin/AdminDatatable";
+import DataTable from "../../components/admin/AdminDataTable";
 import { Link, useNavigate } from "react-router-dom";
 
 export default function EventsAdmin() {
