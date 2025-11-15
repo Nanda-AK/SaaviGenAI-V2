@@ -1,8 +1,8 @@
 // src/pages/Events.jsx
 import React, { useEffect, useState } from "react";
 import { eventsAPI } from "../services/api";
-import EventCard from "../components/eventCard";
-
+import EventCard from "../components/EventCard";
+//git fix 
 export default function Events() {
   const [events, setEvents] = useState([]);
   useEffect(() => {
