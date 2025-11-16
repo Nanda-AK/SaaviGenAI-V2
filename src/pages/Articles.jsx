@@ -1,7 +1,7 @@
 // src/pages/Articles.jsx
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import ArticleCard from "../components/articleCard";
+import ArticleCard from "../components/ArticleCard"
 import { articlesAPI } from "../services/api";
 
 export default function Articles() {
