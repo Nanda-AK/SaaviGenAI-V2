@@ -135,6 +135,7 @@ export default function ArticlesCreate() {
     try {
       const response = await articlesAPI.create(fd);
       console.log("Create response:", response.data);
+      console.log("Article created")
       
       alert("Article created successfully!");
       nav("/admin/articles");

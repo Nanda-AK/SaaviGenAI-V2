@@ -147,7 +147,7 @@ export default function HeroSection() {
           >
             {/* 1. Get Started Button -> /contact */}
             <Link
-              to="/contact"
+              to="/services"
               className="group relative animate-pulse px-8 py-4 bg-gradient-to-r from-cyan-500 to-teal-500 text-black font-semibold rounded-lg overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/50 hover:scale-105 inline-block"
             >
               <span className="relative animate-pulse z-10">Get Started</span>
@@ -156,10 +156,10 @@ export default function HeroSection() {
               
             {/* 2. Learn More Button -> /about */}
             <Link
-              to="/about"
+              to="/contact"
               className="px-8 py-4 animate-bounce bg-transparent border-2 border-cyan-500/50 text-cyan-400 font-semibold rounded-lg transition-all duration-300 hover:bg-cyan-500/10 hover:border-cyan-400 inline-block"
             >
-              Learn More
+              Contact Us
             </Link>
 </motion.div>
 

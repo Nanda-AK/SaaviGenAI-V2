@@ -13,7 +13,7 @@ export default function Articles() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await articlesAPI.list({ page: 1, limit: 20, published: true });
+        const res = await articlesAPI.list({  limit: 20, published: true });
         setArticles(res.data.data.articles || []);
       } catch (e) {
         console.error("Failed to load articles:", e);
@@ -64,70 +64,8 @@ export default function Articles() {
   }
 
   return (
-    <div className="min-h-screen bg-black">
-      {/* Hero Section with Featured Article */}
-      {featuredArticle && (
-        <section className="relative h-[60vh] min-h-[500px] overflow-hidden">
-          {/* Background Image */}
-          {featuredArticle.featuredImage && (
-            <>
-              <img
-                src={featuredArticle.featuredImage}
-                alt={featuredArticle.title}
-                className="absolute inset-0 w-full h-full object-cover opacity-40"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent" />
-            </>
-          )}
-
-          {/* Grid Pattern Overlay */}
-          <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:4rem_4rem]" />
-
-          {/* Content */}
-          <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-end pb-12">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              className="max-w-4xl"
-            >
-              <div className="mb-4">
-                <span className="inline-block px-4 py-1 bg-cyan-500 text-black text-xs font-bold rounded-full mb-2">
-                  Featured Article
-                </span>
-                {featuredArticle.category && (
-                  <span className="inline-block ml-2 px-4 py-1 bg-gray-800 text-gray-300 text-xs font-semibold rounded-full">
-                    {featuredArticle.category}
-                  </span>
-                )}
-              </div>
-              
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 leading-tight">
-                {featuredArticle.title}
-              </h1>
-              
-              {featuredArticle.excerpt && (
-                <p className="text-gray-300 text-lg mb-6 max-w-2xl">
-                  {featuredArticle.excerpt}
-                </p>
-              )}
-              
-             <a
-                href={`/articles/${featuredArticle.slug || featuredArticle._id}`}
-                className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-500 to-teal-500 text-black font-semibold rounded-lg hover:shadow-lg hover:shadow-cyan-500/50 transition-all"
-              >
-                Read Article
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </a>
-            </motion.div>
-          </div>
-        </section>
-      )}
-
-      {/* Main Content */}
-      <section className="py-16 md:py-24">
+      
+      <section className="py-8 md:py-12">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
           <motion.div
@@ -203,6 +141,5 @@ export default function Articles() {
           )}
         </div>
       </section>
-    </div>
   );
 }
