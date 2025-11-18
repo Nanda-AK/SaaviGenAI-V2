@@ -1,9 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import documentPDF from "../../assets/document.pdf";
 
-// Services data - Only 2 services now
+// Services data 
 const services = [
   {
     icon: (
@@ -38,8 +37,8 @@ const services = [
       'Technical Developer Training'
     ],
     color: 'teal',
-    action: 'download',
-    path: documentPDF
+    action: 'navigate',
+    path: '/upskill'
   }
 ];
 
@@ -161,15 +160,7 @@ export default function ServicesSection() {
     if (service.action === 'navigate') {
       // Navigate to Coming Soon page
       navigate(service.path);
-    } else if (service.action === 'download') {
-      // Download PDF
-      const link = document.createElement('a');
-      link.href = service.path;
-      link.download = 'AI_Upskill_Program.pdf';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
+    } 
   };
 
   return (

@@ -39,6 +39,7 @@ import ContactSection from "./components/home/ContactSection";
 import { AboutSection } from "./components/home/AboutSection";
 import ServicesSection from "./components/home/ServicesSection.jsx";
 import ScrollToTop from "./components/ScrollToTop.jsx";
+import UpSkill from "./pages/UpSkills.jsx";
 
 export default function App() {
   return (
@@ -65,6 +66,7 @@ export default function App() {
               <Route path="/about" element={<AboutSection />} />
               <Route path="/services" element={<ServicesSection />} />
               <Route path="/coming-soon" element={<ComingSoon />} />
+              <Route path="/upskill" element={<UpSkill />} />
               <Route path="/login" element={<Login />} />
 
               {/* ----- Admin Routes (Protected) ----- */}
