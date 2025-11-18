@@ -125,14 +125,14 @@ export default function ArticleDetail() {
           >
             {/* Back Button */}
             <Link
-              to="/articles"
-              className="inline-flex items-center gap-2 text-gray-400 hover:text-cyan-400 mb-6 transition-colors"
-            >
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-              Back to Articles
-            </Link>
+                    to="/articles"
+                    className="fixed top-28 right-6 z-50 inline-flex items-center gap-2 px-4 py-2 bg-gray-900/80 backdrop-blur-sm border border-gray-700 text-gray-300 hover:text-cyan-400 hover:border-cyan-500/50 rounded-lg transition-all"
+                  >
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                    </svg>
+                    Back to Articles
+                  </Link>
 
             {/* Badges */}
             <div className="mb-4 flex flex-wrap gap-2">

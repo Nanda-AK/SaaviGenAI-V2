@@ -95,17 +95,7 @@ export  function AboutSection() {
               To democratize AI technology and help organizations harness the power of Generative AI responsibly and effectively. We believe in human-centered AI that augments human capabilities.
             </p>
 
-            {/* Stats */}
-            <div className="grid grid-cols-2 gap-4 md:gap-6">
-              <div className="bg-gray-900/70 rounded-xl p-4 text-center">
-                <div className="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-teal-400 bg-clip-text text-transparent mb-1">22+</div>
-                <div className="text-gray-400 text-sm">Years Experience</div>
-              </div>
-              <div className="bg-gray-900/70 rounded-xl p-4 text-center">
-                <div className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-1">2024</div>
-                <div className="text-gray-400 text-sm">Founded</div>
-              </div>
-            </div>
+            
           </AnimatedSection>
 
           {/* Right Content - Founder */}
