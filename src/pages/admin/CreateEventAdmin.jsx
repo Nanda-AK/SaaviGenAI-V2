@@ -5,9 +5,21 @@ import AdminHeader from "../../components/admin/AdminHeader";
 import { eventsAPI } from "../../services/api";
 import { useNavigate } from "react-router-dom";
 
+// Define the enum options from your Mongoose model for client-side use
+const CATEGORY_OPTIONS = [
+  "Training",
+  "Workshop",
+  "Webinar",
+  "Masterclass",
+  "Conference",
+];
+
+// Define the max length for the excerpt
+const MAX_EXCERPT_LENGTH = 500;
+
 export default function CreateEventAdmin() {
   const nav = useNavigate();
-  
+
   const [submitting, setSubmitting] = useState(false);
   const [values, setValues] = useState({
     title: "",
@@ -15,8 +27,9 @@ export default function CreateEventAdmin() {
     metaDescription: "",
     shortExcerpt: "",
     fullDescription: "",
-    category: "",
-    audience: "",
+    // Set default category to match model default
+    category: "Training", 
+    audience: "Professionals", // Default Audience from model
     mode: "online",
     status: "scheduled",
     startDate: "",
@@ -37,10 +50,19 @@ export default function CreateEventAdmin() {
 
   const onChange = (e) => {
     const { name, value, type, checked } = e.target;
+    
+    // Client-side excerpt length check
+    if (name === "shortExcerpt" && value.length > MAX_EXCERPT_LENGTH) {
+      setError(`Short excerpt cannot exceed ${MAX_EXCERPT_LENGTH} characters.`);
+      return; // Stop updating state if validation fails
+    }
+
     setValues((s) => ({ 
       ...s, 
       [name]: type === "checkbox" ? checked : value 
     }));
+    // Clear error once user starts typing again
+    if (error) setError(""); 
   };
 
   const submit = async (ev) => {
@@ -48,17 +70,30 @@ export default function CreateEventAdmin() {
     setSubmitting(true);
     setError("");
 
+    // --- Client-Side Validation ---
+    
+    // 1. Image Check
     if (!file) {
       setError("Event image is required.");
       setSubmitting(false);
       return;
     }
+    
+    // 2. Required Fields Check
     if (!values.title || !values.startDate || !values.shortExcerpt) {
       setError("Title, start date, and excerpt are required.");
       setSubmitting(false);
       return;
     }
 
+    // 3. Excerpt Length Check (redundant due to onChange, but good for submit protection)
+    if (values.shortExcerpt.length > MAX_EXCERPT_LENGTH) {
+      setError(`Short excerpt cannot exceed ${MAX_EXCERPT_LENGTH} characters.`);
+      setSubmitting(false);
+      return;
+    }
+
+    // --- Prepare FormData ---
     const fd = new FormData();
     
     Object.entries(values).forEach(([key, value]) => {
@@ -66,7 +101,10 @@ export default function CreateEventAdmin() {
         const tagsArray = value.split(",").map(t => t.trim()).filter(Boolean);
         fd.append(key, JSON.stringify(tagsArray));
       } else if (key === "capacity") {
-        fd.append(key, value ? parseInt(value) : "");
+        // Append capacity only if it's a valid number
+        if (value && !isNaN(parseInt(value))) {
+            fd.append(key, parseInt(value));
+        }
       } else if (key === "featured") {
         fd.append(key, value.toString());
       } else {
@@ -76,6 +114,7 @@ export default function CreateEventAdmin() {
     
     fd.append("image", file);
 
+    // --- API Call with Better Error Handling ---
     try {
       const response = await eventsAPI.create(fd);
       console.log("Create response:", response.data);
@@ -84,7 +123,22 @@ export default function CreateEventAdmin() {
       nav("/admin/events");
     } catch (err) {
       console.error("Creation failed:", err);
-      setError(err.response?.data?.message || "Failed to create event");
+      // Enhanced Error Extraction: Try to get detailed message first
+      let errorMessage = "Failed to create event. Please check your inputs.";
+
+      if (err.response && err.response.data && err.response.data.message) {
+        errorMessage = err.response.data.message;
+      } 
+      // Handle Mongoose Validation Errors (which often come back as status 400)
+      else if (err.response && err.response.data && err.response.data.errors) {
+         
+         const validationErrors = err.response.data.errors;
+         const firstKey = Object.keys(validationErrors)[0];
+         errorMessage = `Validation Error: ${validationErrors[firstKey].message || validationErrors[firstKey]}`;
+      }
+
+      setError(errorMessage);
+
     } finally {
       setSubmitting(false);
     }
@@ -107,7 +161,7 @@ export default function CreateEventAdmin() {
 
           {error && (
             <div className="mb-4 p-4 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400">
-              {error}
+              🚨 **Error:** {error}
             </div>
           )}
 
@@ -129,18 +183,25 @@ export default function CreateEventAdmin() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-1 text-gray-300">Short Excerpt *</label>
+                  <label className="block text-sm font-medium mb-1 text-gray-300">Short Excerpt * ({values.shortExcerpt.length}/{MAX_EXCERPT_LENGTH})</label>
                   <textarea
                     name="shortExcerpt"
                     value={values.shortExcerpt}
                     onChange={onChange}
                     required
+                    maxLength={MAX_EXCERPT_LENGTH} 
                     placeholder="Brief description of the event"
                     rows="3"
                     className="border border-gray-700 bg-gray-800 text-white px-3 py-2 rounded-lg w-full focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 placeholder-gray-500"
                   />
+                  {/* Display client-side warning */}
+                  {values.shortExcerpt.length > MAX_EXCERPT_LENGTH - 50 && (
+                    <p className={`text-xs mt-1 ${values.shortExcerpt.length > MAX_EXCERPT_LENGTH ? 'text-red-500 font-bold' : 'text-yellow-500'}`}>
+                        {MAX_EXCERPT_LENGTH - values.shortExcerpt.length} characters remaining.
+                    </p>
+                  )}
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium mb-1 text-gray-300">Full Description</label>
                   <textarea
@@ -185,13 +246,18 @@ export default function CreateEventAdmin() {
                 <div className="grid md:grid-cols-3 gap-4">
                   <div>
                     <label className="block text-sm font-medium mb-1 text-gray-300">Category</label>
-                    <input
+                    {/* --- CATEGORY DROPDOWN CHANGE --- */}
+                    <select
                       name="category"
                       value={values.category}
                       onChange={onChange}
-                      placeholder="e.g., Workshop, Webinar"
-                      className="border border-gray-700 bg-gray-800 text-white px-3 py-2 rounded-lg w-full focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 placeholder-gray-500"
-                    />
+                      className="border border-gray-700 bg-gray-800 text-white px-3 py-2 rounded-lg w-full focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
+                    >
+                      {CATEGORY_OPTIONS.map((cat) => (
+                        <option key={cat} value={cat}>{cat}</option>
+                      ))}
+                    </select>
+                    {/* ---------------------------------- */}
                   </div>
                   <div>
                     <label className="block text-sm font-medium mb-1 text-gray-300">Audience</label>
@@ -212,7 +278,6 @@ export default function CreateEventAdmin() {
                       className="border border-gray-700 bg-gray-800 text-white px-3 py-2 rounded-lg w-full focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
                     >
                       <option value="scheduled">Scheduled</option>
-                      <option value="ongoing">Ongoing</option>
                       <option value="completed">Completed</option>
                       <option value="cancelled">Cancelled</option>
                       <option value="postponed">Postponed</option>
@@ -253,8 +318,9 @@ export default function CreateEventAdmin() {
                       onChange={onChange}
                       className="border border-gray-700 bg-gray-800 text-white px-3 py-2 rounded-lg w-full focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
                     >
+                      {/* Note: Your model had ["online", "in-person", "hybrid"]. I updated 'offline' to 'in-person' to match the model. */}
                       <option value="online">Online</option>
-                      <option value="offline">Offline</option>
+                      <option value="in-person">In-Person</option>
                       <option value="hybrid">Hybrid</option>
                     </select>
                   </div>
@@ -282,6 +348,10 @@ export default function CreateEventAdmin() {
                 </div>
               </div>
             </div>
+
+            {/* Additional Information and Image upload sections follow here... (rest of your form) */}
+            
+            {/* ... (omitted for brevity, assume the rest of the form is here) ... */}
 
             {/* Additional Information */}
             <div className="bg-gray-900 border border-gray-800 rounded-lg p-6">

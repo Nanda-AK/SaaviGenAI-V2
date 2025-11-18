@@ -1,24 +1,62 @@
+// src/pages/admin/ArticlesCreate.jsx
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import AdminSidebar from "../../components/admin/AdminSidebar";
 import AdminHeader from "../../components/admin/AdminHeader";
 import { articlesAPI } from "../../services/api";
-import { useNavigate } from "react-router-dom";
+
+const ARTICLE_CATEGORIES = [
+  "AI/ML",
+  "Security",
+  "Training",
+  "Technology",
+  "Business",
+  "Tutorial",
+  "News",
+  "Case Study",
+  "Research",
+];
+
+// Max constants
+const MAX_TITLE = 200;
+const MAX_EXCERPT = 300;
+const MAX_TAGS = 10;
+const MAX_META_TITLE = 60;
+const MAX_META_DESCRIPTION = 160;
+const MAX_META_KEYWORDS = 15;
 
 export default function ArticlesCreate() {
   const nav = useNavigate();
-  
+
   const [submitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({
     title: "",
     excerpt: "",
     content: "",
-    category: "",
+    category: ARTICLE_CATEGORIES[0],
     tags: "",
-    author: '{\n  "name": "",\n  "designation": ""\n}',
+    author: JSON.stringify(
+      {
+        name: "Nanda Kumar",
+        designation: "Founder & CEO, SaaviGen.AI",
+      },
+      null,
+      2
+    ),
     published: false,
     featured: false,
-    seo: '{\n  "metaTitle": "",\n  "metaDescription": "",\n  "metaKeywords": [],\n  "robots": "index,follow"\n}'
+    seo: JSON.stringify(
+      {
+        metaTitle: "",
+        metaDescription: "",
+        metaKeywords: [],
+        robots: "index,follow",
+      },
+      null,
+      2
+    ),
   });
+
   const [file, setFile] = useState(null);
   const [imagePreview, setImagePreview] = useState("");
   const [error, setError] = useState("");
@@ -26,33 +64,28 @@ export default function ArticlesCreate() {
 
   const change = (e) => {
     const { name, value, type, checked } = e.target;
-    setForm((s) => ({
-      ...s,
-      [name]: type === "checkbox" ? checked : value
-    }));
+    setForm((s) => ({ ...s, [name]: type === "checkbox" ? checked : value }));
+    if (error) setError("");
   };
 
   const handleFileChange = (e) => {
-    const selectedFile = e.target.files?.[0] || null;
-    setFile(selectedFile);
-    
-    if (selectedFile) {
+    const selected = e.target.files?.[0] ?? null;
+    setFile(selected);
+
+    if (selected) {
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result);
-      };
-      reader.readAsDataURL(selectedFile);
+      reader.onloadend = () => setImagePreview(reader.result);
+      reader.readAsDataURL(selected);
+      // if error was specifically about missing image, clear it
+      setError((prev) => (prev.includes("Featured image is required") ? "" : prev));
     } else {
       setImagePreview("");
     }
   };
 
   const quickFillAuthor = () => {
-    const authorTemplate = {
-      name: "Nanda Kumar",
-      designation: "Founder & CEO, SaaviGen.AI"
-    };
-    setForm(s => ({ ...s, author: JSON.stringify(authorTemplate, null, 2) }));
+    const authorTemplate = { name: "Nanda Kumar", designation: "Founder & CEO, SaaviGen.AI" };
+    setForm((s) => ({ ...s, author: JSON.stringify(authorTemplate, null, 2) }));
   };
 
   const quickFillSEO = () => {
@@ -60,45 +93,95 @@ export default function ArticlesCreate() {
       alert("Please fill in title and excerpt first to auto-generate SEO");
       return;
     }
-    
+
+    const tagsArray = form.tags.split(",").map((t) => t.trim()).filter(Boolean);
     const seoTemplate = {
-      metaTitle: form.title + " | SaaviGen.AI",
-      metaDescription: form.excerpt.slice(0, 160),
-      metaKeywords: form.tags.split(",").map(t => t.trim()).filter(Boolean),
-      robots: "index,follow"
+      metaTitle: form.title.slice(0, MAX_META_TITLE) + " | SaaviGen.AI",
+      metaDescription: form.excerpt.slice(0, MAX_META_DESCRIPTION),
+      metaKeywords: tagsArray.slice(0, MAX_META_KEYWORDS),
+      robots: "index,follow",
     };
-    setForm(s => ({ ...s, seo: JSON.stringify(seoTemplate, null, 2) }));
+
+    setForm((s) => ({ ...s, seo: JSON.stringify(seoTemplate, null, 2) }));
   };
 
   const validateForm = () => {
+    // Title
     if (!form.title.trim()) {
-      setError("Title is required");
+      setError("Article Title is required.");
       return false;
     }
+    if (form.title.length > MAX_TITLE) {
+      setError(`Article Title exceeds the maximum limit of ${MAX_TITLE} characters.`);
+      return false;
+    }
+
+    // Excerpt
     if (!form.excerpt.trim()) {
-      setError("Excerpt is required");
+      setError("Excerpt is required.");
       return false;
     }
+    if (form.excerpt.length > MAX_EXCERPT) {
+      setError(`Excerpt exceeds the maximum limit of ${MAX_EXCERPT} characters.`);
+      return false;
+    }
+
+    // Content
     if (!form.content.trim()) {
-      setError("Content is required");
-      return false;
-    }
-    if (!form.category.trim()) {
-      setError("Category is required");
+      setError("Content is required.");
       return false;
     }
 
-    try {
-      JSON.parse(form.author);
-    } catch (e) {
-      setError("Invalid JSON format in Author field");
+    // Category
+    if (!String(form.category || "").trim()) {
+      setError("Category is required.");
       return false;
     }
 
+    // Featured image required by controller
+    if (!file) {
+      setError("Featured image is required for the article.");
+      return false;
+    }
+
+    // Tags count
+    const tagsArray = form.tags.split(",").map((t) => t.trim()).filter(Boolean);
+    if (tagsArray.length > MAX_TAGS) {
+      setError(`Cannot have more than ${MAX_TAGS} tags. You currently have ${tagsArray.length}.`);
+      return false;
+    }
+
+    // Author JSON
+    let parsedAuthor;
     try {
-      JSON.parse(form.seo);
+      parsedAuthor = JSON.parse(form.author);
     } catch (e) {
-      setError("Invalid JSON format in SEO field");
+      setError("Invalid JSON format in Author field. Please check for missing quotes or commas.");
+      return false;
+    }
+    if (!parsedAuthor.name || !parsedAuthor.designation) {
+      setError("Author JSON must contain 'name' and 'designation' fields.");
+      return false;
+    }
+
+    // SEO JSON and limits
+    let parsedSeo;
+    try {
+      parsedSeo = JSON.parse(form.seo);
+    } catch (e) {
+      setError("Invalid JSON format in SEO Metadata field. Please check the structure and use double quotes.");
+      return false;
+    }
+    if (parsedSeo.metaTitle && parsedSeo.metaTitle.length > MAX_META_TITLE) {
+      setError(`SEO Meta Title exceeds the maximum limit of ${MAX_META_TITLE} characters.`);
+      return false;
+    }
+    if (parsedSeo.metaDescription && parsedSeo.metaDescription.length > MAX_META_DESCRIPTION) {
+      setError(`SEO Meta Description exceeds the maximum limit of ${MAX_META_DESCRIPTION} characters.`);
+      return false;
+    }
+    if (parsedSeo.metaKeywords && Array.isArray(parsedSeo.metaKeywords) && parsedSeo.metaKeywords.length > MAX_META_KEYWORDS) {
+      setError(`SEO Meta Keywords cannot exceed ${MAX_META_KEYWORDS} keywords.`);
       return false;
     }
 
@@ -108,41 +191,41 @@ export default function ArticlesCreate() {
   const submit = async (ev) => {
     ev.preventDefault();
     setError("");
-
     if (!validateForm()) {
+      window.scrollTo(0, 0);
       return;
     }
 
     setSubmitting(true);
 
-    const fd = new FormData();
-    fd.append("title", form.title);
-    fd.append("excerpt", form.excerpt);
-    fd.append("content", form.content);
-    fd.append("category", form.category);
-    
-    const tagsArray = form.tags.split(",").map(t => t.trim()).filter(Boolean);
-    fd.append("tags", JSON.stringify(tagsArray));
-    fd.append("author", form.author);
-    fd.append("published", form.published.toString());
-    fd.append("featured", form.featured.toString());
-    fd.append("seo", form.seo);
-    
-    if (file) {
-      fd.append("featuredImage", file);
-    }
-
     try {
+      const fd = new FormData();
+      fd.append("title", form.title);
+      fd.append("excerpt", form.excerpt);
+      fd.append("content", form.content);
+      fd.append("category", form.category);
+
+      const tagsArray = form.tags.split(",").map((t) => t.trim()).filter(Boolean);
+      fd.append("tags", JSON.stringify(tagsArray));
+      fd.append("author", form.author);
+      fd.append("published", String(form.published));
+      fd.append("featured", String(form.featured));
+      fd.append("seo", form.seo);
+
+      if (file) fd.append("featuredImage", file);
+
       const response = await articlesAPI.create(fd);
-      console.log("Create response:", response.data);
-      console.log("Article created")
-      
+      console.log("Create response:", response?.data);
       alert("Article created successfully!");
       nav("/admin/articles");
     } catch (e) {
       console.error("Create failed:", e);
-      setError(e.response?.data?.message || "Failed to create article");
-      alert(e.response?.data?.message || "Failed to create article");
+      const serverMessage =
+        e?.response?.data?.message ||
+        (e?.response?.data?.errors ? e.response.data.errors.join(", ") : null) ||
+        "Failed to create article";
+      setError(serverMessage);
+      window.scrollTo(0, 0);
     } finally {
       setSubmitting(false);
     }
@@ -151,63 +234,65 @@ export default function ArticlesCreate() {
   const loadTemplate = () => {
     const template = {
       title: "Understanding RAG in GenAI",
-      excerpt: "A comprehensive guide to Retrieval Augmented Generation and how it enhances Large Language Models",
+      excerpt:
+        "A comprehensive guide to Retrieval Augmented Generation and how it enhances Large Language Models",
       content: `<h2>Introduction to RAG</h2>
-<p>Retrieval Augmented Generation (RAG) is a powerful technique that combines the strengths of retrieval-based systems with generative AI models.</p>
-
-<h3>What is RAG?</h3>
-<p>RAG works by retrieving relevant information from a knowledge base and using it to augment the context provided to a language model. This approach helps reduce hallucinations and provides more accurate, up-to-date responses.</p>
-
-<h3>Key Benefits</h3>
-<ul>
-  <li>Improved accuracy and reliability</li>
-  <li>Access to up-to-date information</li>
-  <li>Reduced hallucinations</li>
-  <li>Domain-specific knowledge integration</li>
-</ul>
-
-<h3>How RAG Works</h3>
-<p>The RAG process involves three main steps:</p>
-<ol>
-  <li><strong>Retrieval:</strong> Query relevant documents from a knowledge base</li>
-  <li><strong>Augmentation:</strong> Combine retrieved context with user query</li>
-  <li><strong>Generation:</strong> Generate response using LLM with augmented context</li>
-</ol>
-
-<h2>Conclusion</h2>
-<p>RAG represents a significant advancement in making AI systems more reliable and useful for real-world applications.</p>`,
+<p>Retrieval Augmented Generation (RAG) is a powerful technique that combines the strengths of retrieval-based systems with generative AI models.</p>`,
       category: "AI/ML",
       tags: "rag, genai, llm, ai, machine learning",
-      author: JSON.stringify({
-        name: "Nanda Kumar",
-        designation: "Founder & CEO, SaaviGen.AI"
-      }, null, 2),
-      seo: JSON.stringify({
-        metaTitle: "Understanding RAG in GenAI - Complete Guide | SaaviGen.AI",
-        metaDescription: "Learn everything about Retrieval Augmented Generation and how it enhances Large Language Models. A comprehensive guide for developers and AI practitioners.",
-        metaKeywords: ["rag", "genai", "retrieval augmented generation", "llm", "ai"],
-        robots: "index,follow"
-      }, null, 2)
+      author: JSON.stringify(
+        {
+          name: "Nanda Kumar",
+          designation: "Founder & CEO, SaaviGen.AI",
+        },
+        null,
+        2
+      ),
+      seo: JSON.stringify(
+        {
+          metaTitle: "Understanding RAG in GenAI - Complete Guide | SaaviGen.AI",
+          metaDescription:
+            "Learn everything about Retrieval Augmented Generation and how it enhances Large Language Models. A comprehensive guide for developers and AI practitioners.",
+          metaKeywords: ["rag", "genai", "retrieval augmented generation", "llm", "ai"],
+          robots: "index,follow",
+        },
+        null,
+        2
+      ),
     };
-    
-    setForm(s => ({ ...s, ...template }));
+
+    setForm((s) => ({ ...s, ...template }));
     alert("Template loaded! Feel free to customize it.");
   };
+
+  // helper values for UI
+  const currentTags = form.tags.split(",").map((t) => t.trim()).filter(Boolean).length;
+  let seoMetaTitleLength = 0;
+  let seoMetaDescriptionLength = 0;
+  let seoMetaKeywordsCount = 0;
+  try {
+    const parsedSeo = JSON.parse(form.seo);
+    seoMetaTitleLength = (parsedSeo.metaTitle || "").length;
+    seoMetaDescriptionLength = (parsedSeo.metaDescription || "").length;
+    seoMetaKeywordsCount = Array.isArray(parsedSeo.metaKeywords) ? parsedSeo.metaKeywords.length : 0;
+  } catch (e) {
+    // ignore parse errors for live counters
+  }
 
   return (
     <div className="flex min-h-screen bg-black">
       <AdminSidebar />
       <div className="flex-1">
         <AdminHeader />
-        
+
         <main className="p-8 max-w-7xl mx-auto">
-          {/* Header Section */}
           <div className="mb-8">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-3">
-                <button 
+                <button
                   onClick={() => nav("/admin/articles")}
                   className="text-gray-500 hover:text-gray-300 transition-colors"
+                  type="button"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -218,25 +303,30 @@ export default function ArticlesCreate() {
                   <p className="text-gray-400 mt-1">Share your knowledge with the world</p>
                 </div>
               </div>
-              
-              <button
-                type="button"
-                onClick={loadTemplate}
-                className="px-4 py-2 bg-purple-900/50 text-purple-300 hover:bg-purple-900/70 rounded-lg font-medium transition-colors flex items-center gap-2 border border-purple-700"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-                Load Template
-              </button>
+
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={loadTemplate}
+                  className="px-4 py-2 bg-purple-900/50 text-purple-300 hover:bg-purple-900/70 rounded-lg font-medium transition-colors flex items-center gap-2 border border-purple-700"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  Load Template
+                </button>
+              </div>
             </div>
           </div>
 
-          {/* Error Banner */}
           {error && (
             <div className="mb-6 p-4 bg-red-950/50 border-l-4 border-red-500 rounded-r-lg flex items-start gap-3">
               <svg className="w-5 h-5 text-red-400 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                  clipRule="evenodd"
+                />
               </svg>
               <div>
                 <p className="font-semibold text-red-300">Error</p>
@@ -246,9 +336,8 @@ export default function ArticlesCreate() {
           )}
 
           <form onSubmit={submit} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Main Content Column */}
             <div className="lg:col-span-2 space-y-6">
-              {/* Title & Content Card */}
+              {/* Article Content Card */}
               <div className="bg-gray-900 rounded-xl shadow-sm border border-gray-800 overflow-hidden">
                 <div className="p-6 border-b border-gray-800 bg-gradient-to-r from-blue-950/30 to-gray-900">
                   <h2 className="text-lg font-semibold text-white flex items-center gap-2">
@@ -258,8 +347,8 @@ export default function ArticlesCreate() {
                     Article Content
                   </h2>
                 </div>
+
                 <div className="p-6 space-y-5">
-                  {/* Title */}
                   <div>
                     <label className="block text-sm font-semibold text-gray-300 mb-2">
                       Article Title <span className="text-red-500">*</span>
@@ -269,15 +358,16 @@ export default function ArticlesCreate() {
                       value={form.title}
                       onChange={change}
                       required
+                      maxLength={MAX_TITLE}
                       placeholder="Enter an engaging title for your article"
-                      className="w-full px-4 py-3 text-lg bg-gray-800 border border-gray-700 text-white rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-shadow placeholder-gray-500"
+                      className={`w-full px-4 py-3 text-lg bg-gray-800 border ${form.title.length > MAX_TITLE ? "border-red-500 ring-red-500" : "border-gray-700 focus:ring-cyan-500 focus:border-cyan-500"} text-white rounded-lg focus:ring-2 transition-shadow placeholder-gray-500`}
                     />
-                    <p className="mt-1.5 text-xs text-gray-500">
-                      {form.title.length} characters {form.title.length > 0 && form.title.length < 30 && "• Consider making it more descriptive (30-60 chars recommended)"}
+                    <p className={`mt-1.5 text-xs ${form.title.length > MAX_TITLE ? "text-red-400 font-bold" : "text-gray-500"}`}>
+                      {form.title.length} / {MAX_TITLE} characters
+                      {form.title.length > MAX_TITLE && " • Too long!"}
                     </p>
                   </div>
 
-                  {/* Excerpt */}
                   <div>
                     <label className="block text-sm font-semibold text-gray-300 mb-2">
                       Excerpt <span className="text-red-500">*</span>
@@ -287,19 +377,20 @@ export default function ArticlesCreate() {
                       value={form.excerpt}
                       onChange={change}
                       required
+                      maxLength={MAX_EXCERPT}
                       placeholder="Write a compelling summary that will appear in article listings and search results (160-200 characters recommended)"
-                      rows="3"
-                      className="w-full px-4 py-3 bg-gray-800 border border-gray-700 text-white rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-shadow resize-none placeholder-gray-500"
+                      rows={3}
+                      className={`w-full px-4 py-3 bg-gray-800 border ${form.excerpt.length > MAX_EXCERPT ? "border-red-500 ring-red-500" : "border-gray-700 focus:ring-cyan-500 focus:border-cyan-500"} text-white rounded-lg focus:ring-2 transition-shadow resize-none placeholder-gray-500`}
                     />
-                    <p className="mt-1.5 text-xs text-gray-500">
-                      {form.excerpt.length} characters 
+                    <p className={`mt-1.5 text-xs ${form.excerpt.length > MAX_EXCERPT ? "text-red-400 font-bold" : "text-gray-500"}`}>
+                      {form.excerpt.length} / {MAX_EXCERPT} characters
                       {form.excerpt.length > 0 && form.excerpt.length < 100 && " • Too short"}
                       {form.excerpt.length >= 100 && form.excerpt.length <= 200 && " • ✓ Good length"}
-                      {form.excerpt.length > 200 && " • Consider shortening for better readability"}
+                      {form.excerpt.length > 200 && form.excerpt.length <= MAX_EXCERPT && " • Consider shortening"}
+                      {form.excerpt.length > MAX_EXCERPT && " • Too long!"}
                     </p>
                   </div>
 
-                  {/* Content */}
                   <div>
                     <label className="block text-sm font-semibold text-gray-300 mb-2">
                       Article Content (HTML) <span className="text-red-500">*</span>
@@ -309,13 +400,15 @@ export default function ArticlesCreate() {
                       value={form.content}
                       onChange={change}
                       required
-                      placeholder="<h2>Introduction</h2>&#10;<p>Start writing your article content here. You can use HTML tags for formatting.</p>&#10;&#10;<h3>Key Points</h3>&#10;<ul>&#10;  <li>Point 1</li>&#10;  <li>Point 2</li>&#10;</ul>"
-                      rows="18"
+                      placeholder="<h2>Introduction</h2>\n<p>Start writing your article content here. You can use HTML tags for formatting.</p>"
+                      rows={18}
                       className="w-full px-4 py-3 bg-gray-800 border border-gray-700 text-white rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-shadow font-mono text-sm resize-y placeholder-gray-600"
                     />
                     <div className="mt-2 p-3 bg-blue-950/30 rounded-lg border border-blue-900/50">
                       <p className="text-xs text-blue-300 font-medium mb-1">💡 HTML Tips:</p>
-                      <p className="text-xs text-blue-400">Use &lt;h2&gt;, &lt;h3&gt; for headings • &lt;p&gt; for paragraphs • &lt;ul&gt;/&lt;ol&gt; for lists • &lt;strong&gt; for bold • &lt;em&gt; for italic • &lt;a href="..."&gt; for links</p>
+                      <p className="text-xs text-blue-400">
+                        Use &lt;h2&gt;, &lt;h3&gt; for headings • &lt;p&gt; for paragraphs • &lt;ul&gt;/&lt;ol&gt; for lists • &lt;strong&gt; for bold • &lt;em&gt; for italic • &lt;a href="..."&gt; for links
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -323,66 +416,70 @@ export default function ArticlesCreate() {
 
               {/* SEO Settings Card */}
               <div className="bg-gray-900 rounded-xl shadow-sm border border-gray-800 overflow-hidden">
-                <div className="p-6 border-b border-gray-800 bg-gradient-to-r from-green-950/30 to-gray-900">
-                  <div className="flex items-center justify-between">
-                    <h2 className="text-lg font-semibold text-white flex items-center gap-2">
-                      <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                      </svg>
-                      SEO Settings
-                    </h2>
-                    <button
-                      type="button"
-                      onClick={quickFillSEO}
-                      className="text-xs px-3 py-1.5 bg-green-900/50 text-green-300 hover:bg-green-900/70 rounded-lg font-medium transition-colors border border-green-700"
-                    >
-                      Auto-generate SEO
-                    </button>
-                  </div>
+                <div className="p-6 border-b border-gray-800 bg-gradient-to-r from-green-950/30 to-gray-900 flex items-center justify-between">
+                  <h2 className="text-lg font-semibold text-white flex items-center gap-2">
+                    <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                    SEO Settings
+                  </h2>
+                  <button
+                    type="button"
+                    onClick={quickFillSEO}
+                    className="text-xs px-3 py-1.5 bg-green-900/50 text-green-300 hover:bg-green-900/70 rounded-lg font-medium transition-colors border border-green-700"
+                  >
+                    Auto-generate SEO
+                  </button>
                 </div>
+
                 <div className="p-6">
                   <div className="mb-3 flex items-center justify-between">
-                    <label className="block text-sm font-semibold text-gray-300">
-                      SEO Metadata (JSON)
-                    </label>
+                    <label className="block text-sm font-semibold text-gray-300">SEO Metadata (JSON)</label>
                     <button
                       type="button"
-                      onClick={() => setShowJsonHelper(s => ({ ...s, seo: !s.seo }))}
+                      onClick={() => setShowJsonHelper((s) => ({ ...s, seo: !s.seo }))}
                       className="text-xs text-cyan-400 hover:text-cyan-300 underline"
                     >
                       {showJsonHelper.seo ? "Hide" : "Show"} format guide
                     </button>
                   </div>
-                  
+
                   {showJsonHelper.seo && (
                     <div className="mb-3 p-3 bg-gray-800 rounded-lg border border-gray-700 text-xs font-mono">
                       <pre className="text-cyan-400 whitespace-pre-wrap">{`{
-  "metaTitle": "Article Title | SaaviGen.AI",
-  "metaDescription": "Brief description (150-160 chars)",
-  "metaKeywords": ["keyword1", "keyword2", "keyword3"],
+  "metaTitle": "Article Title (Max ${MAX_META_TITLE} chars)",
+  "metaDescription": "Brief description (Max ${MAX_META_DESCRIPTION} chars)",
+  "metaKeywords": ["keyword1", "keyword2"], // Max ${MAX_META_KEYWORDS} keywords
   "robots": "index,follow"
 }`}</pre>
+
+                      <div className={`mt-2 p-2 rounded text-xs ${seoMetaTitleLength > MAX_META_TITLE || seoMetaDescriptionLength > MAX_META_DESCRIPTION || seoMetaKeywordsCount > MAX_META_KEYWORDS ? "bg-red-950 text-red-300" : "bg-green-950 text-green-300"}`}>
+                        <p>Meta Title: {seoMetaTitleLength} / {MAX_META_TITLE} chars</p>
+                        <p>Meta Description: {seoMetaDescriptionLength} / {MAX_META_DESCRIPTION} chars</p>
+                        <p>Keywords: {seoMetaKeywordsCount} / {MAX_META_KEYWORDS} max</p>
+                      </div>
                     </div>
                   )}
-                  
+
                   <textarea
                     name="seo"
                     value={form.seo}
                     onChange={change}
-                    rows="7"
+                    rows={7}
                     className="w-full px-4 py-3 bg-gray-800 border border-gray-700 text-cyan-400 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-shadow font-mono text-sm"
                   />
                 </div>
               </div>
             </div>
 
-            {/* Sidebar Column */}
+            {/* Sidebar */}
             <div className="space-y-6">
               {/* Actions Card */}
               <div className="bg-gray-900 rounded-xl shadow-sm border border-gray-800 overflow-hidden sticky top-6">
                 <div className="p-4 border-b border-gray-800 bg-gradient-to-r from-purple-950/30 to-gray-900">
                   <h3 className="font-semibold text-white">Publish Article</h3>
                 </div>
+
                 <div className="p-4 space-y-3">
                   <button
                     type="submit"
@@ -406,7 +503,7 @@ export default function ArticlesCreate() {
                       </>
                     )}
                   </button>
-                  
+
                   <button
                     type="button"
                     onClick={() => nav("/admin/articles")}
@@ -459,44 +556,57 @@ export default function ArticlesCreate() {
                 </div>
               </div>
 
-              {/* Category & Tags Card */}
+              {/* Categorization Card */}
               <div className="bg-gray-900 rounded-xl shadow-sm border border-gray-800 overflow-hidden">
                 <div className="p-4 border-b border-gray-800 bg-gradient-to-r from-indigo-950/30 to-gray-900">
                   <h3 className="font-semibold text-white flex items-center gap-2">
                     <svg className="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 3h10a2 2 0 012 2v3a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2zm0 9h10a2 2 0 012 2v3a2 2 0 01-2 2H7a2 2 0 01-2-2v-3a2 2 0 012-2z" />
                     </svg>
                     Categorization
                   </h3>
                 </div>
+
                 <div className="p-4 space-y-4">
                   <div>
                     <label className="block text-sm font-semibold text-gray-300 mb-2">
                       Category <span className="text-red-500">*</span>
                     </label>
-                    <input
+
+                    <select
                       name="category"
                       value={form.category}
                       onChange={change}
                       required
-                      placeholder="e.g., AI/ML, Technology, Tutorial"
-                      className="w-full px-3 py-2 bg-gray-800 border border-gray-700 text-white rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-shadow placeholder-gray-500"
-                    />
-                    <p className="mt-1.5 text-xs text-gray-500">Choose a primary category</p>
+                      className="w-full px-3 py-2 bg-gray-800 border border-gray-700 text-white rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-shadow appearance-none"
+                    >
+                      <option value="" disabled>
+                        Select a Category
+                      </option>
+                      {ARTICLE_CATEGORIES.map((cat) => (
+                        <option key={cat} value={cat}>
+                          {cat}
+                        </option>
+                      ))}
+                    </select>
+
+                    <p className="mt-1.5 text-xs text-gray-500">Choose a primary category from the list</p>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-semibold text-gray-300 mb-2">
-                      Tags
-                    </label>
+                    <label className="block text-sm font-semibold text-gray-300 mb-2">Tags</label>
                     <input
                       name="tags"
                       value={form.tags}
                       onChange={change}
-                      placeholder="rag, genai, llm, ai, machine learning"
-                      className="w-full px-3 py-2 bg-gray-800 border border-gray-700 text-white rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-shadow placeholder-gray-500"
+                      placeholder="rag, genai, llm, ai, machine learning (Max 10 tags)"
+                      className={`w-full px-3 py-2 bg-gray-800 border ${currentTags > MAX_TAGS ? "border-red-500 ring-red-500" : "border-gray-700 focus:ring-cyan-500 focus:border-cyan-500"} text-white rounded-lg focus:ring-2 transition-shadow placeholder-gray-500`}
                     />
-                    <p className="mt-1.5 text-xs text-gray-500">Comma-separated keywords</p>
+                    <p className={`mt-1.5 text-xs ${currentTags > MAX_TAGS ? "text-red-400 font-bold" : "text-gray-500"}`}>
+                      {currentTags} / {MAX_TAGS} tags
+                      {currentTags > MAX_TAGS && " • Too many tags!"}
+                    </p>
+
                     {form.tags && (
                       <div className="mt-2 flex flex-wrap gap-1.5">
                         {form.tags.split(",").map((tag, i) => (
@@ -522,6 +632,7 @@ export default function ArticlesCreate() {
                       </svg>
                       Author
                     </h3>
+
                     <button
                       type="button"
                       onClick={quickFillAuthor}
@@ -531,20 +642,19 @@ export default function ArticlesCreate() {
                     </button>
                   </div>
                 </div>
+
                 <div className="p-4">
                   <div className="mb-2 flex items-center justify-between">
-                    <label className="block text-sm font-semibold text-gray-300">
-                      Author Info (JSON)
-                    </label>
+                    <label className="block text-sm font-semibold text-gray-300">Author Info (JSON)</label>
                     <button
                       type="button"
-                      onClick={() => setShowJsonHelper(s => ({ ...s, author: !s.author }))}
+                      onClick={() => setShowJsonHelper((s) => ({ ...s, author: !s.author }))}
                       className="text-xs text-cyan-400 hover:text-cyan-300 underline"
                     >
                       {showJsonHelper.author ? "Hide" : "Show"} format
                     </button>
                   </div>
-                  
+
                   {showJsonHelper.author && (
                     <div className="mb-3 p-3 bg-gray-800 rounded-lg border border-gray-700 text-xs font-mono">
                       <pre className="text-cyan-400">{`{
@@ -553,12 +663,12 @@ export default function ArticlesCreate() {
 }`}</pre>
                     </div>
                   )}
-                  
+
                   <textarea
                     name="author"
                     value={form.author}
                     onChange={change}
-                    rows="4"
+                    rows={4}
                     className="w-full px-3 py-2 bg-gray-800 border border-gray-700 text-cyan-400 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-shadow font-mono text-sm"
                   />
                 </div>
@@ -571,18 +681,15 @@ export default function ArticlesCreate() {
                     <svg className="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
-                    Featured Image
+                    Featured Image <span className="text-red-500 text-sm ml-1">*</span>
                   </h3>
                 </div>
+
                 <div className="p-4">
                   {imagePreview && (
                     <div className="mb-4">
                       <div className="relative">
-                        <img
-                          src={imagePreview}
-                          alt="Preview"
-                          className="w-full h-48 object-cover rounded-lg border-2 border-gray-700"
-                        />
+                        <img src={imagePreview} alt="Preview" className="w-full h-48 object-cover rounded-lg border-2 border-gray-700" />
                         <button
                           type="button"
                           onClick={() => {
@@ -600,30 +707,21 @@ export default function ArticlesCreate() {
                       <p className="text-xs text-gray-500 mt-2">Preview</p>
                     </div>
                   )}
-                  
+
                   <input
                     type="file"
                     accept="image/*"
                     onChange={handleFileChange}
-                    className="block w-full text-sm text-gray-400
-                      file:mr-4 file:py-2.5 file:px-4
-                      file:rounded-lg file:border-0
-                      file:text-sm file:font-semibold
-                      file:bg-cyan-900/50 file:text-cyan-300
-                      hover:file:bg-cyan-900/70 cursor-pointer file:border file:border-cyan-700"
+                    className="block w-full text-sm text-gray-400 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-cyan-900/50 file:text-cyan-300 hover:file:bg-cyan-900/70 cursor-pointer file:border file:border-cyan-700"
                   />
-                  
+
                   {file && (
                     <div className="mt-3 p-3 bg-cyan-950/30 rounded-lg border border-cyan-900/50">
-                      <p className="text-sm text-cyan-300 font-medium">
-                        📎 {file.name}
-                      </p>
-                      <p className="text-xs text-cyan-400 mt-1">
-                        {(file.size / 1024).toFixed(2)} KB • Ready to upload
-                      </p>
+                      <p className="text-sm text-cyan-300 font-medium">📎 {file.name}</p>
+                      <p className="text-xs text-cyan-400 mt-1">{(file.size / 1024).toFixed(2)} KB • Ready to upload</p>
                     </div>
                   )}
-                  
+
                   <div className="mt-3 p-3 bg-gray-800 rounded-lg border border-gray-700">
                     <p className="text-xs text-gray-400">
                       💡 <strong className="text-gray-300">Tip:</strong> Use high-quality images (1200x630px recommended) for best results on social media
@@ -642,6 +740,7 @@ export default function ArticlesCreate() {
                     Writing Tips
                   </h3>
                 </div>
+
                 <div className="p-4 space-y-3 text-sm">
                   <div className="flex gap-2">
                     <span className="text-violet-400 font-bold">1.</span>
