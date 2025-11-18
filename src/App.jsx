@@ -14,6 +14,7 @@ import Articles from "./pages/Articles";
 import ArticleDetail from "./pages/ArticleDetail";
 import Events from "./pages/Events";
 import EventDetail from "./pages/EventDetail";
+import ComingSoon from "./pages/ComingSoon.jsx";
 import Contact from "./pages/Contact";
 import About from "./pages/About";
 import Login from "./pages/login";
@@ -37,11 +38,15 @@ import ArticlesCreate from "./pages/admin/CreateArticle";
 import ContactSection from "./components/home/ContactSection";
 import { AboutSection } from "./components/home/AboutSection";
 import ServicesSection from "./components/home/ServicesSection.jsx";
+import ScrollToTop from "./components/ScrollToTop.jsx";
 
 export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
+        {/* ScrollToTop Component - MUST be inside BrowserRouter but OUTSIDE Routes */}
+        <ScrollToTop />
+        
         {/* Dark theme wrapper - applies to entire app */}
         <div className="min-h-screen flex flex-col bg-black text-white">
           {/* Header for public site (Fixed at top) */}
@@ -59,6 +64,7 @@ export default function App() {
               <Route path="/contact" element={<ContactSection/>} />
               <Route path="/about" element={<AboutSection />} />
               <Route path="/services" element={<ServicesSection />} />
+              <Route path="/coming-soon" element={<ComingSoon />} />
               <Route path="/login" element={<Login />} />
 
               {/* ----- Admin Routes (Protected) ----- */}
