@@ -68,6 +68,10 @@ export default function CreateEventAdmin() {
   const submit = async (ev) => {
     ev.preventDefault();
     setSubmitting(true);
+     window.scrollTo({
+          top: 0,
+          behavior: 'smooth' 
+      });
     setError("");
 
     // --- Client-Side Validation ---
@@ -124,7 +128,8 @@ export default function CreateEventAdmin() {
     } catch (err) {
       console.error("Creation failed:", err);
       // Enhanced Error Extraction: Try to get detailed message first
-      let errorMessage = "Failed to create event. Please check your inputs.";
+      let errorMessage = "Failed to create event.Internal server error.";
+
 
       if (err.response && err.response.data && err.response.data.message) {
         errorMessage = err.response.data.message;
@@ -136,8 +141,14 @@ export default function CreateEventAdmin() {
          const firstKey = Object.keys(validationErrors)[0];
          errorMessage = `Validation Error: ${validationErrors[firstKey].message || validationErrors[firstKey]}`;
       }
-
+      
       setError(errorMessage);
+      window.scrollTo({
+          top: 0,
+          behavior: 'smooth' 
+      });
+      console.log("reason of failior creaction" ,errorMessage)
+
 
     } finally {
       setSubmitting(false);
@@ -357,7 +368,7 @@ export default function CreateEventAdmin() {
             <div className="bg-gray-900 border border-gray-800 rounded-lg p-6">
               <h3 className="font-semibold text-white mb-4">Additional Links & Pricing</h3>
               <div className="space-y-4">
-                <div className="grid md:grid-cols-3 gap-4">
+                {/* <div className="grid md:grid-cols-3 gap-4">
                   <div>
                     <label className="block text-sm font-medium mb-1 text-gray-300">Registration Link</label>
                     <input
@@ -388,7 +399,7 @@ export default function CreateEventAdmin() {
                       className="border border-gray-700 bg-gray-800 text-white px-3 py-2 rounded-lg w-full focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 placeholder-gray-500"
                     />
                   </div>
-                </div>
+                </div> */}
                 
                 <div>
                   <label className="block text-sm font-medium mb-1 text-gray-300">Price (JSON format)</label>

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import logo from "../../assets/logo.png";
+import hero from "../../assets/HomePage.png"
 
 // ============================================
 // Animated Gradient Mesh Background
@@ -201,9 +201,9 @@ export default function HeroSection() {
 
     <div className="relative flex flex-col items-center text-center">
       
-      {/* LOGO IMAGE */}
+      {/* hero IMAGE */}
       <img 
-        src={logo} 
+        src={hero} 
         alt="Saavi Logo"
         className="w-40 md:w-56 lg:w-64 rounded-xl shadow-lg shadow-cyan-500/20 
           transition-transform duration-500 group-hover:scale-105"

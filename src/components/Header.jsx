@@ -65,7 +65,7 @@ export default function Header() {
               {/* Glow effect on logo */}
               <div className="absolute inset-0 bg-cyan-500/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity rounded-full" />
             </div>
-            
+            {/* [#00d0ff] */}
             <div className="hidden sm:block">
               <div className="font-bold text-base md:text-lg flex items-center">
                 <span className="text-[#00d0ff]">SaaviGen</span>
@@ -100,7 +100,7 @@ export default function Header() {
             
             {/* CTA Button */}
             <Link
-              to="/contact"
+              to="/services"
               className="ml-2 px-6 py-2 bg-gradient-to-r from-cyan-500 to-teal-500 text-black font-semibold rounded-lg text-sm transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/50 hover:scale-105"
             >
               Get Started

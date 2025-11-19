@@ -1,15 +1,14 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import upskillImage from "../../assets/AIUpskill.png"
+import AIStratergyConsultingImage from "../../assets/AIStrategyConsulting.png"
 
 // Services data 
 const services = [
   {
-    icon: (
-      <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-      </svg>
-    ),
+    
+    image: AIStratergyConsultingImage, 
     title: 'AI Strategy Consulting',
     description: 'Transform your business with strategic AI implementation guidance',
     features: [
@@ -23,11 +22,8 @@ const services = [
     path: '/coming-soon'
   },
   {
-    icon: (
-      <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-      </svg>
-    ),
+    
+    image: upskillImage, 
     title: 'AI Upskill',
     description: 'Upskill your team with comprehensive AI training',
     features: [
@@ -42,7 +38,7 @@ const services = [
   }
 ];
 
-// Color gradients for each service
+// Color gradients for each service (no changes needed here)
 const colorClasses = {
   cyan: 'from-cyan-500/20 to-teal-500/20 border-cyan-500/30 group-hover:border-cyan-400',
   teal: 'from-teal-500/20 to-emerald-500/20 border-teal-500/30 group-hover:border-teal-400'
@@ -57,108 +53,100 @@ const iconColorClasses = {
 const ServiceCard = ({ service, index, onLearnMore }) => {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 50 }}
+      initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-100px' }}
-      transition={{ duration: 0.6, delay: index * 0.1 }}
-      className="group relative"
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.45, delay: index * 0.08 }}
+      className="group w-full"
     >
-      {/* Card */}
-      <div className={`
-        relative h-full
-        bg-gradient-to-br from-gray-900/50 to-black/50
-        backdrop-blur-sm
-        border
-        ${colorClasses[service.color]}
-        rounded-xl p-5 md:p-6
-        transition-all duration-300
-        hover:shadow-2xl hover:shadow-${service.color}-500/10
-        hover:-translate-y-2
-      `}>
-        {/* Glow effect on hover */}
-        <div className={`absolute -inset-0.5 bg-gradient-to-r ${colorClasses[service.color].split(' ')[0]} rounded-xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300`} />
-        
-        <div className="relative">
-          {/* Icon */}
-          <div className={`
-            w-12 h-12 
-            bg-gradient-to-br ${colorClasses[service.color].split(' ')[0]}
-            rounded-lg
-            flex items-center justify-center
-            mb-4
-            border ${colorClasses[service.color].split(' ')[1]}
-            ${iconColorClasses[service.color]}
-            group-hover:scale-110 transition-transform duration-300
-          `}>
-            {service.icon}
-          </div>
+      <div
+        className={`
+          relative flex flex-col
+          bg-[#0a0c0f] 
+          rounded-2xl overflow-hidden 
+          border border-white/5
+          backdrop-blur-[2px]
+          transition-all duration-300
+          hover:-translate-y-2
+          hover:shadow-[0_0_25px_rgba(0,255,255,0.2)]
+          bg-gradient-to-br ${colorClasses[service.color]}
+          max-w-[360px] mx-auto
+        `}
+      >
+        {/* IMAGE */}
+        <div className="w-full h-32 md:h-36 overflow-hidden relative">
+          <img
+            src={service.image}
+            alt={service.title}
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+          />
 
-          {/* Title */}
-          <h3 className="text-lg md:text-xl font-bold text-white mb-2">
+          {/* Glow overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent pointer-events-none" />
+        </div>
+
+        {/* CONTENT */}
+        <div className="p-3 flex flex-col flex-grow">
+          <h3 className="text-lg md:text-lg font-semibold text-white mb-1 tracking-tight">
             {service.title}
           </h3>
 
-          {/* Description */}
-          <p className="text-gray-400 text-sm mb-4 leading-relaxed">
+          <p className="text-gray-400 text-sm md:text-sm mb-4 leading-relaxed line-clamp-2">
             {service.description}
           </p>
 
-          {/* Features */}
-          <ul className="space-y-2">
+          {/* FEATURES */}
+          <ul className="space-y-2 flex-grow">
             {service.features.map((feature, i) => (
               <motion.li
                 key={i}
-                initial={{ opacity: 0, x: -20 }}
+                initial={{ opacity: 0, x: -10 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: index * 0.1 + i * 0.05 }}
-                className="flex items-start gap-2"
+                transition={{ delay: i * 0.05 }}
+                className="flex items-start gap-3"
               >
-                <div className={`
-                  w-4 h-4 rounded-full 
-                  bg-gradient-to-br ${colorClasses[service.color].split(' ')[0]}
-                  flex items-center justify-center
-                  flex-shrink-0 mt-0.5
-                `}>
-                  <svg className={`w-2.5 h-2.5 ${iconColorClasses[service.color]}`} fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                </div>
-                <span className="text-gray-300 text-xs md:text-sm">{feature}</span>
+                {/* Neon dot */}
+                <span className="w-2 h-2 rounded-full mt-1 bg-cyan-400/80 shadow-[0_0_8px_rgba(0,255,255,0.7)]"></span>
+
+                <span className="text-gray-300 text-sm md:sm">
+                  {feature}
+                </span>
               </motion.li>
             ))}
           </ul>
 
-          {/* Learn More Link */}
-          <motion.button
-            whileHover={{ x: 5 }}
+          {/* ACTION */}
+          <button
             onClick={() => onLearnMore(service)}
-            className={`
-              mt-5 flex items-center gap-2
-              ${iconColorClasses[service.color]}
-              font-semibold text-xs md:text-sm
-              group/link
-              cursor-pointer
-            `}
+            className="mt-5 p-2 flex items-center gap-1 text-cyan-400 text-sm md:text-base font-medium group-hover:text-cyan-300 transition"
           >
             Learn More
-            <svg className="w-3.5 h-3.5 group-hover/link:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            <svg
+              className="w-4 h-4 transition-transform group-hover:translate-x-1"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
             </svg>
-          </motion.button>
+          </button>
         </div>
       </div>
     </motion.div>
   );
 };
 
-// Main Services Section
+
+
+
+// Main Services Section (unchanged logic)
 export default function ServicesSection() {
   const navigate = useNavigate();
 
   const handleLearnMore = (service) => {
     if (service.action === 'navigate') {
-      // Navigate to Coming Soon page
       navigate(service.path);
     } 
   };
@@ -183,7 +171,7 @@ export default function ServicesSection() {
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="inline-flex items-center  gap-2 px-3 py-1.5 bg-cyan-500/10 border border-cyan-500/30 rounded-full mb-4"
+            className="inline-flex items-center gap-2 px-3 py-1.5 bg-cyan-500/10 border border-cyan-500/30 rounded-full mb-4"
           >
             <span className="text-cyan-400 text-xs md:text-sm font-medium">Our Services</span>
           </motion.div>
@@ -199,7 +187,7 @@ export default function ServicesSection() {
           </p>
         </motion.div>
 
-        {/* Services Grid - 2 columns, both visible without scrolling */}
+        {/* Services Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto">
           {services.map((service, index) => (
             <ServiceCard 

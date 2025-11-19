@@ -67,7 +67,8 @@ export default function ArticlesAdmin() {
     {
       key: "featuredImage",
       label: "Image",
-      render: (r) => r.featuredImage?.url ? (
+      render: (r) => r.featuredImage?(
+        
         <img 
           src={r.featuredImage} 
           alt={r.title} 
@@ -76,6 +77,7 @@ export default function ArticlesAdmin() {
       ) : (
         <div className="w-16 h-16 bg-gray-800 rounded flex items-center justify-center text-xs text-gray-500">
           No image
+          {console.log(r.featuredImage)}
         </div>
       )
     },
@@ -121,13 +123,7 @@ export default function ArticlesAdmin() {
         </div>
       )
     },
-    {
-      key: "views",
-      label: "Views",
-      render: (r) => (
-        <div className="text-sm font-semibold text-cyan-400">{r.views || 0}</div>
-      )
-    },
+ 
     {
       key: "createdAt",
       label: "Created",

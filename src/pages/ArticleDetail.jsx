@@ -222,7 +222,7 @@ export default function ArticleDetail() {
             </div>
 
             {/* Share Section */}
-            <div className="mt-12 flex items-center justify-between flex-wrap gap-4 p-6 bg-gray-900/50 backdrop-blur-sm border border-gray-800 rounded-xl">
+            {/* <div className="mt-12 flex items-center justify-between flex-wrap gap-4 p-6 bg-gray-900/50 backdrop-blur-sm border border-gray-800 rounded-xl">
               <div className="text-gray-400">
                 Share this article
               </div>
@@ -243,7 +243,7 @@ export default function ArticleDetail() {
                   </svg>
                 </button>
               </div>
-            </div>
+            </div> */}
           </motion.div>
         </div>
       </section>

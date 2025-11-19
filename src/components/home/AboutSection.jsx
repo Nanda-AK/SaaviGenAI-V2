@@ -1,6 +1,7 @@
 import React, { memo, useEffect, useState } from 'react';
 import { motion, useAnimation } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
+import nanda from "../../assets/NandaKumar.png"
 
 const FounderCard = memo(() => (
   <div className="relative bg-gradient-to-br from-gray-900/80 to-black/80 backdrop-blur-sm border border-gray-800 rounded-2xl p-6 md:p-8 shadow-lg">
@@ -8,14 +9,19 @@ const FounderCard = memo(() => (
     <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl blur opacity-15" />
 
     <div className="relative">
-      {/* Avatar */}
+      {/* Photo (Bigger and using imported image) */}
       <div className="flex justify-center mb-6">
         <div className="relative">
-          <div className="w-28 h-28 rounded-full bg-gradient-to-br from-cyan-500 to-purple-500 p-1">
-            <div className="w-full h-full rounded-full bg-gray-900 flex items-center justify-center text-4xl">
-              👤
-            </div>
+          {/* Increased size from w-28 h-28 to w-36 h-36 */}
+          <div className="w-36 h-36 rounded-full bg-gradient-to-br from-cyan-500 to-purple-500 p-1">
+            {/* The actual Image tag using the imported 'nanda' variable */}
+            <img
+              src={nanda}
+              alt="Nanda Kumar Kirubakaran Photo"
+              className="w-full h-full rounded-full object-cover" 
+            />
           </div>
+          {/* Online Status Indicator (Kept) */}
           <div className="absolute bottom-1 right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-gray-900" />
         </div>
       </div>

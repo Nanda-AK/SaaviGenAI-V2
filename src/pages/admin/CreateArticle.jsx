@@ -43,7 +43,7 @@ export default function ArticlesCreate() {
       null,
       2
     ),
-    published: false,
+    published: true,
     featured: false,
     seo: JSON.stringify(
       {
@@ -526,7 +526,7 @@ export default function ArticlesCreate() {
                   </h3>
                 </div>
                 <div className="p-4 space-y-4">
-                  <label className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 cursor-pointer transition-colors border-2 border-transparent has-[:checked]:border-cyan-700 has-[:checked]:bg-cyan-950/30">
+                  {/* <label className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 cursor-pointer transition-colors border-2 border-transparent has-[:checked]:border-cyan-700 has-[:checked]:bg-cyan-950/30">
                     <input
                       type="checkbox"
                       name="published"
@@ -538,7 +538,7 @@ export default function ArticlesCreate() {
                       <div className="font-semibold text-white">Publish Now</div>
                       <div className="text-xs text-gray-400">Make article visible to readers immediately</div>
                     </div>
-                  </label>
+                  </label> */}
 
                   <label className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 cursor-pointer transition-colors border-2 border-transparent has-[:checked]:border-amber-700 has-[:checked]:bg-amber-950/30">
                     <input

@@ -166,411 +166,430 @@ export default function ArticlesEdit() {
     );
   }
 
-  return (
-    <div className="flex min-h-screen bg-slate-50">
-      <AdminSidebar />
-      <div className="flex-1">
-        <AdminHeader />
-        
-        <main className="p-8 max-w-7xl mx-auto">
-          {/* Header Section */}
-          <div className="mb-8">
-            <div className="flex items-center gap-3 mb-2">
-              <button 
-                onClick={() => nav("/admin/articles")}
-                className="text-slate-400 hover:text-slate-600 transition-colors"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                </svg>
-              </button>
-              <h1 className="text-3xl font-bold text-slate-800">
-                {editing ? "Edit Article" : "Create New Article"}
-              </h1>
-            </div>
-            <p className="text-slate-600 ml-8">
-              {editing 
-                ? "Update your article content and settings" 
-                : "Create engaging content for your audience"}
-            </p>
+ return (
+  <div className="flex min-h-screen bg-[#0b0b0e] text-slate-200">
+    <AdminSidebar />
+    <div className="flex-1 bg-[#0b0b0e]">
+      <AdminHeader />
+
+      <main className="p-8 max-w-7xl mx-auto">
+
+        {/* Header Section */}
+        <div className="mb-8">
+          <div className="flex items-center gap-3 mb-2">
+            <button
+              onClick={() => nav("/admin/articles")}
+              className="text-slate-400 hover:text-slate-200 transition-colors"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+            </button>
+            <h1 className="text-3xl font-bold text-white">
+              {editing ? "Edit Article" : "Create New Article"}
+            </h1>
           </div>
 
-          {/* Error Banner */}
-          {error && (
-            <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-r-lg flex items-start gap-3">
-              <svg className="w-5 h-5 text-red-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-              </svg>
-              <div>
-                <p className="font-semibold text-red-800">Error</p>
-                <p className="text-red-700 text-sm">{error}</p>
-              </div>
+          <p className="text-slate-400 ml-8">
+            {editing
+              ? "Update your article content and settings"
+              : "Create engaging content for your audience"}
+          </p>
+        </div>
+
+        {/* Error Banner */}
+        {error && (
+          <div className="mb-6 p-4 bg-red-900/40 border-l-4 border-red-500 rounded-r-lg flex items-start gap-3">
+            <svg className="w-5 h-5 text-red-400 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M10 18a8 8 0..." />
+            </svg>
+            <div>
+              <p className="font-semibold text-red-300">Error</p>
+              <p className="text-red-400 text-sm">{error}</p>
             </div>
-          )}
+          </div>
+        )}
 
-          <form onSubmit={submit} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Main Content Column */}
-            <div className="lg:col-span-2 space-y-6">
-              {/* Title & Content Card */}
-              <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                <div className="p-6 border-b border-slate-200 bg-gradient-to-r from-blue-50 to-white">
-                  <h2 className="text-lg font-semibold text-slate-800 flex items-center gap-2">
-                    <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                    </svg>
-                    Content
-                  </h2>
-                </div>
-                <div className="p-6 space-y-5">
-                  {/* Title */}
-                  <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-2">
-                      Article Title <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      name="title"
-                      value={form.title}
-                      onChange={change}
-                      required
-                      placeholder="Enter an engaging title for your article"
-                      className="w-full px-4 py-3 text-lg border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow"
-                    />
-                    <p className="mt-1.5 text-xs text-slate-500">
-                      {form.title.length} characters
-                    </p>
-                  </div>
+        <form onSubmit={submit} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-                  {/* Excerpt */}
-                  <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-2">
-                      Excerpt <span className="text-red-500">*</span>
-                    </label>
-                    <textarea
-                      name="excerpt"
-                      value={form.excerpt}
-                      onChange={change}
-                      required
-                      placeholder="Write a compelling summary of your article (160-200 characters recommended)"
-                      rows="3"
-                      className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow resize-none"
-                    />
-                    <p className="mt-1.5 text-xs text-slate-500">
-                      {form.excerpt.length} characters {form.excerpt.length > 200 && "⚠️ Consider keeping it under 200"}
-                    </p>
-                  </div>
+          {/* Main Content Column */}
+          <div className="lg:col-span-2 space-y-6">
 
-                  {/* Content */}
-                  <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-2">
-                      Article Content (HTML) <span className="text-red-500">*</span>
-                    </label>
-                    <textarea
-                      name="content"
-                      value={form.content}
-                      onChange={change}
-                      required
-                      placeholder="<h2>Introduction</h2>&#10;<p>Start writing your article content here. You can use HTML tags for formatting.</p>&#10;&#10;<h3>Key Points</h3>&#10;<ul>&#10;  <li>Point 1</li>&#10;  <li>Point 2</li>&#10;</ul>"
-                      rows="16"
-                      className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow font-mono text-sm resize-y"
-                    />
-                    <div className="mt-2 p-3 bg-blue-50 rounded-lg border border-blue-100">
-                      <p className="text-xs text-blue-800 font-medium mb-1">💡 HTML Tips:</p>
-                      <p className="text-xs text-blue-700">Use &lt;h2&gt;, &lt;h3&gt; for headings • &lt;p&gt; for paragraphs • &lt;ul&gt;/&lt;ol&gt; for lists • &lt;strong&gt; for bold • &lt;em&gt; for italic</p>
-                    </div>
-                  </div>
-                </div>
+            {/* Card - Content */}
+            <div className="bg-[#111217] rounded-xl shadow border border-slate-700 overflow-hidden">
+              <div className="p-6 border-b border-slate-700 bg-gradient-to-r from-blue-900/40 to-transparent">
+                <h2 className="text-lg font-semibold text-white flex items-center gap-2">
+                  <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor">
+                    <path d="..." />
+                  </svg>
+                  Content
+                </h2>
               </div>
 
-              {/* SEO Settings Card */}
-              <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                <div className="p-6 border-b border-slate-200 bg-gradient-to-r from-green-50 to-white">
-                  <div className="flex items-center justify-between">
-                    <h2 className="text-lg font-semibold text-slate-800 flex items-center gap-2">
-                      <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                      </svg>
-                      SEO Settings
-                    </h2>
-                    <button
-                      type="button"
-                      onClick={quickFillSEO}
-                      className="text-xs px-3 py-1.5 bg-green-100 text-green-700 hover:bg-green-200 rounded-lg font-medium transition-colors"
-                    >
-                      Auto-fill from content
-                    </button>
-                  </div>
-                </div>
-                <div className="p-6">
-                  <div className="mb-3 flex items-center justify-between">
-                    <label className="block text-sm font-semibold text-slate-700">
-                      SEO Metadata (JSON)
-                    </label>
-                    <button
-                      type="button"
-                      onClick={() => setShowJsonHelper(s => ({ ...s, seo: !s.seo }))}
-                      className="text-xs text-blue-600 hover:text-blue-800 underline"
-                    >
-                      {showJsonHelper.seo ? "Hide" : "Show"} format guide
-                    </button>
-                  </div>
-                  
-                  {showJsonHelper.seo && (
-                    <div className="mb-3 p-3 bg-slate-50 rounded-lg border border-slate-200 text-xs font-mono">
-                      <pre className="text-slate-700 whitespace-pre-wrap">{`{
-  "metaTitle": "Article Title | SaaviGen.AI",
-  "metaDescription": "Brief description",
-  "metaKeywords": ["keyword1", "keyword2"],
-  "robots": "index,follow"
-}`}</pre>
-                    </div>
-                  )}
-                  
-                  <textarea
-                    name="seo"
-                    value={form.seo}
+              <div className="p-6 space-y-5">
+
+                {/* Title */}
+                <div>
+                  <label className="block text-sm font-semibold text-slate-300 mb-2">
+                    Article Title <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    name="title"
+                    value={form.title}
                     onChange={change}
-                    rows="6"
-                    className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-shadow font-mono text-sm"
+                    required
+                    placeholder="Enter an engaging title for your article"
+                    className="w-full px-4 py-3 text-lg bg-[#0f0f12] border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
+                  <p className="mt-1.5 text-xs text-slate-500">{form.title.length} characters</p>
                 </div>
+
+                {/* Excerpt */}
+                <div>
+                  <label className="block text-sm font-semibold text-slate-300 mb-2">
+                    Excerpt <span className="text-red-500">*</span>
+                  </label>
+                  <textarea
+                    name="excerpt"
+                    value={form.excerpt}
+                    onChange={change}
+                    required
+                    placeholder="Write a compelling summary…"
+                    rows="3"
+                    className="w-full px-4 py-3 bg-[#0f0f12] border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+                  />
+                  <p className="mt-1.5 text-xs text-slate-500">
+                    {form.excerpt.length} characters {form.excerpt.length > 200 && "⚠️ Keep it under 200"}
+                  </p>
+                </div>
+
+                {/* Content HTML */}
+                <div>
+                  <label className="block text-sm font-semibold text-slate-300 mb-2">
+                    Article Content (HTML) <span className="text-red-500">*</span>
+                  </label>
+
+                  <textarea
+                    name="content"
+                    value={form.content}
+                    onChange={change}
+                    required
+                    rows="16"
+                    className="w-full px-4 py-3 bg-[#0f0f12] border border-slate-600 rounded-lg text-white font-mono text-sm focus:ring-2 focus:ring-blue-500"
+                    placeholder="<h2>Introduction</h2>..."
+                  />
+
+                  <div className="mt-2 p-3 bg-blue-900/30 rounded-lg border border-blue-800">
+                    <p className="text-xs text-blue-300 font-medium mb-1">💡 HTML Tips:</p>
+                    <p className="text-xs text-blue-400">Use &lt;h2&gt;, &lt;p&gt;, &lt;ul&gt; etc.</p>
+                  </div>
+                </div>
+
               </div>
             </div>
 
-            {/* Sidebar Column */}
-            <div className="space-y-6">
-              {/* Actions Card */}
-              <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden sticky top-6">
-                <div className="p-4 border-b border-slate-200 bg-gradient-to-r from-purple-50 to-white">
-                  <h3 className="font-semibold text-slate-800">Actions</h3>
-                </div>
-                <div className="p-4 space-y-3">
-                  <button
-                    type="submit"
-                    disabled={submitting}
-                    className="w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                  >
-                    {submitting ? (
-                      <>
-                        <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        Saving...
-                      </>
-                    ) : (
-                      <>
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                        </svg>
-                        {editing ? "Update Article" : "Create Article"}
-                      </>
-                    )}
-                  </button>
-                  
+            {/* SEO Settings */}
+            <div className="bg-[#111217] rounded-xl shadow border border-slate-700 overflow-hidden">
+              <div className="p-6 border-b border-slate-700 bg-gradient-to-r from-green-900/40 to-transparent flex justify-between">
+                <h2 className="text-lg font-semibold text-white flex items-center gap-2">
+                  <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor">
+                    <path d="..." />
+                  </svg>
+                  SEO Settings
+                </h2>
+
+                <button
+                  type="button"
+                  onClick={quickFillSEO}
+                  className="text-xs px-3 py-1.5 bg-green-900/40 text-green-300 hover:bg-green-800 rounded-lg"
+                >
+                  Auto-fill from content
+                </button>
+              </div>
+
+              <div className="p-6">
+
+                {/* Helper */}
+                <div className="mb-3 flex items-center justify-between">
+                  <label className="text-sm font-semibold text-slate-300">
+                    SEO Metadata (JSON)
+                  </label>
+
                   <button
                     type="button"
-                    onClick={() => nav("/admin/articles")}
-                    disabled={submitting}
-                    className="w-full px-4 py-2.5 border-2 border-slate-300 text-slate-700 hover:bg-slate-50 font-medium rounded-lg transition-colors disabled:opacity-50"
+                    onClick={() => setShowJsonHelper(s => ({ ...s, seo: !s.seo }))}
+                    className="text-xs text-blue-300 hover:text-blue-200 underline"
                   >
-                    Cancel
+                    {showJsonHelper.seo ? "Hide" : "Show"} format guide
                   </button>
                 </div>
-              </div>
 
-              {/* Publishing Options Card */}
-              <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                <div className="p-4 border-b border-slate-200 bg-gradient-to-r from-amber-50 to-white">
-                  <h3 className="font-semibold text-slate-800 flex items-center gap-2">
-                    <svg className="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-                    </svg>
-                    Publishing
-                  </h3>
-                </div>
-                <div className="p-4 space-y-4">
-                  <label className="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors">
-                    <input
-                      type="checkbox"
-                      name="published"
-                      checked={form.published}
-                      onChange={change}
-                      className="w-5 h-5 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
-                    />
-                    <div>
-                      <div className="font-semibold text-slate-800">Published</div>
-                      <div className="text-xs text-slate-500">Make article visible to public</div>
-                    </div>
-                  </label>
-
-                  <label className="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors">
-                    <input
-                      type="checkbox"
-                      name="featured"
-                      checked={form.featured}
-                      onChange={change}
-                      className="w-5 h-5 text-amber-600 rounded focus:ring-2 focus:ring-amber-500"
-                    />
-                    <div>
-                      <div className="font-semibold text-slate-800">Featured</div>
-                      <div className="text-xs text-slate-500">Show on homepage</div>
-                    </div>
-                  </label>
-                </div>
-              </div>
-
-              {/* Category & Tags Card */}
-              <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                <div className="p-4 border-b border-slate-200 bg-gradient-to-r from-indigo-50 to-white">
-                  <h3 className="font-semibold text-slate-800 flex items-center gap-2">
-                    <svg className="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                    </svg>
-                    Organization
-                  </h3>
-                </div>
-                <div className="p-4 space-y-4">
-                  <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-2">
-                      Category <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      name="category"
-                      value={form.category}
-                      onChange={change}
-                      required
-                      placeholder="AI/ML, Technology, etc."
-                      className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-shadow"
-                    />
+                {showJsonHelper.seo && (
+                  <div className="mb-3 p-3 bg-[#0f0f12] rounded-lg border border-slate-700 text-xs font-mono text-slate-300">
+                    <pre>{`{\n  "metaTitle": "Article Title",\n  ...\n}`}</pre>
                   </div>
+                )}
 
-                  <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-2">
-                      Tags
-                    </label>
-                    <input
-                      name="tags"
-                      value={form.tags}
-                      onChange={change}
-                      placeholder="rag, genai, llm, ai"
-                      className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-shadow"
-                    />
-                    <p className="mt-1.5 text-xs text-slate-500">Separate with commas</p>
-                    {form.tags && (
-                      <div className="mt-2 flex flex-wrap gap-1.5">
-                        {form.tags.split(",").map((tag, i) => (
-                          <span key={i} className="px-2 py-1 bg-indigo-100 text-indigo-700 text-xs rounded-full">
-                            {tag.trim()}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              {/* Author Card */}
-              <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                <div className="p-4 border-b border-slate-200 bg-gradient-to-r from-pink-50 to-white">
-                  <div className="flex items-center justify-between">
-                    <h3 className="font-semibold text-slate-800 flex items-center gap-2">
-                      <svg className="w-5 h-5 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                      </svg>
-                      Author
-                    </h3>
-                    <button
-                      type="button"
-                      onClick={quickFillAuthor}
-                      className="text-xs px-3 py-1.5 bg-pink-100 text-pink-700 hover:bg-pink-200 rounded-lg font-medium transition-colors"
-                    >
-                      Quick fill
-                    </button>
-                  </div>
-                </div>
-                <div className="p-4">
-                  <div className="mb-2 flex items-center justify-between">
-                    <label className="block text-sm font-semibold text-slate-700">
-                      Author Info (JSON)
-                    </label>
-                    <button
-                      type="button"
-                      onClick={() => setShowJsonHelper(s => ({ ...s, author: !s.author }))}
-                      className="text-xs text-blue-600 hover:text-blue-800 underline"
-                    >
-                      {showJsonHelper.author ? "Hide" : "Show"} format
-                    </button>
-                  </div>
-                  
-                  {showJsonHelper.author && (
-                    <div className="mb-3 p-3 bg-slate-50 rounded-lg border border-slate-200 text-xs font-mono">
-                      <pre className="text-slate-700">{`{
-  "name": "John Doe",
-  "designation": "CEO"
-}`}</pre>
-                    </div>
-                  )}
-                  
-                  <textarea
-                    name="author"
-                    value={form.author}
-                    onChange={change}
-                    rows="3"
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-shadow font-mono text-sm"
-                  />
-                </div>
-              </div>
-
-              {/* Featured Image Card */}
-              <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                <div className="p-4 border-b border-slate-200 bg-gradient-to-r from-cyan-50 to-white">
-                  <h3 className="font-semibold text-slate-800 flex items-center gap-2">
-                    <svg className="w-5 h-5 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    Featured Image
-                  </h3>
-                </div>
-                <div className="p-4">
-                  {currentImage && (
-                    <div className="mb-4">
-                      <img
-                        src={currentImage}
-                        alt="Current featured"
-                        className="w-full h-48 object-cover rounded-lg border-2 border-slate-200"
-                      />
-                      <p className="text-xs text-slate-500 mt-2">Current image</p>
-                    </div>
-                  )}
-                  
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => setFile(e.target.files?.[0] || null)}
-                    className="block w-full text-sm text-slate-500
-                      file:mr-4 file:py-2.5 file:px-4
-                      file:rounded-lg file:border-0
-                      file:text-sm file:font-semibold
-                      file:bg-cyan-50 file:text-cyan-700
-                      hover:file:bg-cyan-100 cursor-pointer"
-                  />
-                  
-                  {file && (
-                    <div className="mt-3 p-3 bg-cyan-50 rounded-lg border border-cyan-100">
-                      <p className="text-sm text-cyan-800 font-medium">
-                        📎 {file.name}
-                      </p>
-                      <p className="text-xs text-cyan-600 mt-1">
-                        Ready to upload
-                      </p>
-                    </div>
-                  )}
-                </div>
+                <textarea
+                  name="seo"
+                  value={form.seo}
+                  onChange={change}
+                  rows="6"
+                  className="w-full px-4 py-3 bg-[#0f0f12] border border-slate-600 rounded-lg text-white font-mono focus:ring-2 focus:ring-green-500"
+                />
               </div>
             </div>
-          </form>
-        </main>
-      </div>
+
+          </div>
+
+          {/* Sidebar Column */}
+          <div className="space-y-6">
+
+            {/* Actions */}
+            <div className="bg-[#111217] rounded-xl shadow border border-slate-700 overflow-hidden sticky top-6">
+              <div className="p-4 border-b border-slate-700 bg-gradient-to-r from-purple-900/40 to-transparent">
+                <h3 className="font-semibold text-white">Actions</h3>
+              </div>
+
+              <div className="p-4 space-y-3">
+
+                {/* Submit */}
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg disabled:opacity-50 flex items-center justify-center gap-2"
+                >
+                  {submitting ? (
+                    <>
+                      <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="..." />
+                      </svg>
+                      Saving...
+                    </>
+                  ) : (
+                    <>
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor">
+                        <path d="..." />
+                      </svg>
+                      {editing ? "Update Article" : "Create Article"}
+                    </>
+                  )}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => nav("/admin/articles")}
+                  disabled={submitting}
+                  className="w-full px-4 py-2.5 border border-slate-600 text-slate-300 hover:bg-[#1a1a21] rounded-lg"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+
+            {/* Publishing */}
+            <div className="bg-[#111217] rounded-xl shadow border border-slate-700 overflow-hidden">
+              <div className="p-4 border-b border-slate-700 bg-gradient-to-r from-amber-900/40 to-transparent">
+                <h3 className="font-semibold text-white flex items-center gap-2">
+                  <svg className="w-5 h-5 text-amber-400" fill="none" stroke="currentColor">
+                    <path d="..." />
+                  </svg>
+                  Publishing
+                </h3>
+              </div>
+
+              <div className="p-4 space-y-4">
+                {/* Published */}
+                <label className="flex items-center gap-3 p-3 rounded-lg hover:bg-[#1a1a21] cursor-pointer">
+                  <input
+                    type="checkbox"
+                    name="published"
+                    checked={form.published}
+                    onChange={change}
+                    className="w-5 h-5 text-blue-500 rounded"
+                  />
+                  <div>
+                    <div className="font-semibold text-white">Published</div>
+                    <div className="text-xs text-slate-400">Make article visible</div>
+                  </div>
+                </label>
+
+                {/* Featured */}
+                <label className="flex items-center gap-3 p-3 rounded-lg hover:bg-[#1a1a21] cursor-pointer">
+                  <input
+                    type="checkbox"
+                    name="featured"
+                    checked={form.featured}
+                    onChange={change}
+                    className="w-5 h-5 text-amber-500 rounded"
+                  />
+                  <div>
+                    <div className="font-semibold text-white">Featured</div>
+                    <div className="text-xs text-slate-400">Show on homepage</div>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            {/* Category / Tags */}
+            <div className="bg-[#111217] rounded-xl shadow border border-slate-700 overflow-hidden">
+              <div className="p-4 border-b border-slate-700 bg-gradient-to-r from-indigo-900/40 to-transparent">
+                <h3 className="font-semibold text-white flex items-center gap-2">
+                  <svg className="w-5 h-5 text-indigo-400" stroke="currentColor">
+                    <path d="..." />
+                  </svg>
+                  Organization
+                </h3>
+              </div>
+
+              <div className="p-4 space-y-4">
+
+                {/* Category */}
+                <div>
+                  <label className="block text-sm font-semibold text-slate-300 mb-2">
+                    Category <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    name="category"
+                    value={form.category}
+                    onChange={change}
+                    required
+                    className="w-full px-3 py-2 bg-[#0f0f12] border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-indigo-500"
+                    placeholder="Tech, AI/ML, etc."
+                  />
+                </div>
+
+                {/* Tags */}
+                <div>
+                  <label className="block text-sm font-semibold text-slate-300 mb-2">Tags</label>
+
+                  <input
+                    name="tags"
+                    value={form.tags}
+                    onChange={change}
+                    className="w-full px-3 py-2 bg-[#0f0f12] border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-indigo-500"
+                    placeholder="rag, genai, llm…"
+                  />
+
+                  <p className="mt-1.5 text-xs text-slate-500">Separate with commas</p>
+
+                  {form.tags && (
+                    <div className="mt-2 flex flex-wrap gap-1.5">
+                      {form.tags.split(",").map((tag, i) => (
+                        <span
+                          key={i}
+                          className="px-2 py-1 bg-indigo-900/50 text-indigo-300 text-xs rounded-full"
+                        >
+                          {tag.trim()}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+              </div>
+            </div>
+
+            {/* Author Info */}
+            <div className="bg-[#111217] rounded-xl shadow border border-slate-700 overflow-hidden">
+              <div className="p-4 border-b border-slate-700 bg-gradient-to-r from-pink-900/40 to-transparent flex justify-between">
+                <h3 className="font-semibold text-white flex items-center gap-2">
+                  <svg className="w-5 h-5 text-pink-400" stroke="currentColor">
+                    <path d="..." />
+                  </svg>
+                  Author
+                </h3>
+
+                <button
+                  type="button"
+                  onClick={quickFillAuthor}
+                  className="text-xs px-3 py-1.5 bg-pink-900/40 text-pink-300 hover:bg-pink-800 rounded-lg"
+                >
+                  Quick fill
+                </button>
+              </div>
+
+              <div className="p-4">
+
+                <div className="mb-2 flex items-center justify-between">
+                  <label className="block text-sm font-semibold text-slate-300">
+                    Author Info (JSON)
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => setShowJsonHelper(s => ({ ...s, author: !s.author }))}
+                    className="text-xs text-blue-300 hover:text-blue-200 underline"
+                  >
+                    {showJsonHelper.author ? "Hide" : "Show"} format
+                  </button>
+                </div>
+
+                {showJsonHelper.author && (
+                  <div className="mb-3 p-3 bg-[#0f0f12] border border-slate-700 rounded-lg text-xs font-mono text-slate-300">
+                    <pre>{`{\n  "name": "John Doe",\n  "designation": "CEO"\n}`}</pre>
+                  </div>
+                )}
+
+                <textarea
+                  name="author"
+                  value={form.author}
+                  onChange={change}
+                  rows="3"
+                  className="w-full px-3 py-2 bg-[#0f0f12] border border-slate-600 rounded-lg text-white font-mono text-sm focus:ring-2 focus:ring-pink-500"
+                />
+              </div>
+            </div>
+
+            {/* Featured Image */}
+            <div className="bg-[#111217] rounded-xl shadow border border-slate-700 overflow-hidden">
+              <div className="p-4 border-b border-slate-700 bg-gradient-to-r from-cyan-900/40 to-transparent">
+                <h3 className="font-semibold text-white flex items-center gap-2">
+                  <svg className="w-5 h-5 text-cyan-400" stroke="currentColor">
+                    <path d="..." />
+                  </svg>
+                  Featured Image
+                </h3>
+              </div>
+
+              <div className="p-4">
+
+                {currentImage && (
+                  <div className="mb-4">
+                    <img
+                      src={currentImage}
+                      className="w-full h-48 object-cover rounded-lg border border-slate-700"
+                    />
+                    <p className="text-xs text-slate-500 mt-2">Current image</p>
+                  </div>
+                )}
+
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setFile(e.target.files?.[0] || null)}
+                  className="block w-full text-sm text-slate-400
+                    file:mr-4 file:py-2.5 file:px-4
+                    file:rounded-lg file:border-0
+                    file:bg-cyan-900/40 file:text-cyan-300
+                    hover:file:bg-cyan-800 cursor-pointer"
+                />
+
+                {file && (
+                  <div className="mt-3 p-3 bg-cyan-900/30 border border-cyan-800 rounded-lg">
+                    <p className="text-sm text-cyan-300 font-medium">📎 {file.name}</p>
+                    <p className="text-xs text-cyan-400 mt-1">Ready to upload</p>
+                  </div>
+                )}
+
+              </div>
+            </div>
+
+          </div>
+        </form>
+      </main>
     </div>
-  );
+  </div>
+);
+
 }

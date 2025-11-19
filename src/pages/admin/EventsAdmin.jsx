@@ -128,15 +128,7 @@ export default function EventsAdmin() {
         <span className="capitalize text-sm text-cyan-400">{r.mode}</span>
       )
     },
-    { 
-      key: "attendees", 
-      label: "Attendees",
-      render: (r) => (
-        <div className="text-sm text-white">
-          {r.attendees || 0} / {r.capacity || "∞"}
-        </div>
-      )
-    },
+    
   ];
 
   return (
