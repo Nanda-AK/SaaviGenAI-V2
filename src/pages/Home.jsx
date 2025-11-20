@@ -62,7 +62,7 @@ import HeroSection from '../components/home/HeroSection';
 import { ProductsSection } from '../components/home/ProductsSection';
 import ServicesSection from '../components/home/ServicesSection';
 import { AboutSection } from '../components/home/AboutSection';
-import { TestimonialsSection } from '../components/home/TestimonialsSection';
+import  TestimonialsSection  from '../components/home/TestimonialsSection';
 import ContactSection from '../components/home/ContactSection';
 
 export default function Home() {

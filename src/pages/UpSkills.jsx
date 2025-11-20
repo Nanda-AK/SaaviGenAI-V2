@@ -13,6 +13,7 @@ const courses = [
       { label: "Session Framework", file: "/pdfs/beyond_framework.pdf" },
     ],
   },
+  
 ];
 
 export default function UpSkill() {

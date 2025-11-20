@@ -165,8 +165,9 @@ export default function ServicesSection() {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
-        >
-          <motion.div
+        > 
+         {/* our servicestext  */}
+          {/* <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
@@ -174,7 +175,7 @@ export default function ServicesSection() {
             className="inline-flex items-center gap-2 px-3 py-1.5 bg-cyan-500/10 border border-cyan-500/30 rounded-full mb-4"
           >
             <span className="text-cyan-400 text-xs md:text-sm font-medium">Our Services</span>
-          </motion.div>
+          </motion.div> */}
 
           <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4">
             <span className="text-white">Comprehensive </span>

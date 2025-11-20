@@ -219,16 +219,19 @@ export default function EventDetail() {
             </div>
 
             {/* CTA Button */}
-            <Link
-              to = "/contact" 
-            >
-              <button className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-500 to-teal-500 text-black font-semibold rounded-lg hover:shadow-lg hover:shadow-cyan-500/50 transition-all">
+           <a
+            
+            href="https://www.meetup.com/aidefense/" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+          >
+            <button className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-500 to-teal-500 text-black font-semibold rounded-lg hover:shadow-lg hover:shadow-cyan-500/50 transition-all">
               Register for Events
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
               </svg>
             </button>
-            </Link>
+          </a>
           </motion.div>
         </div>
       </section>
@@ -340,17 +343,19 @@ export default function EventDetail() {
               <p className="text-gray-300 mb-6 max-w-2xl mx-auto text-sm">
                 Don't miss this opportunity to learn from industry experts and enhance your skills.
               </p>
-              <Link
-                to = "/contact"
-              >
-                <button className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-500 to-teal-500 text-black font-semibold rounded-lg hover:shadow-lg hover:shadow-cyan-500/50 transition-all">
-                Register Now
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                </svg>
-              </button>
-              </Link>
-            </div>
+              <a
+                  href="https://www.meetup.com/aidefense/" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                >
+                  <button className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-500 to-teal-500 text-black font-semibold rounded-lg hover:shadow-lg hover:shadow-cyan-500/50 transition-all">
+                    Register Now
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    </svg>
+                  </button>
+                </a>
+                            </div>
           </motion.div>
         </div>
       </section>

@@ -1,78 +1,77 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { testimonialsAPI } from '../../services/api';
 
- import { testimonialsAPI } from '../../services/api';
-
-export function TestimonialsSection() {
+export default function TestimonialsSection() {
   const [testimonials, setTestimonials] = useState([]);
   const [activeIndex, setActiveIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const MAX_DOTS = 6; // Maximum number of navigation dots to display
+
   useEffect(() => {
     fetchTestimonials();
   }, []);
+
   const fetchTestimonials = async () => {
-  setLoading(true);
-  setError(null);
+    setLoading(true);
+    setError(null);
 
-  const fallbackTestimonials = [
-    {
-      _id: "1",
-      name: "Shreyash",
-      designation: "Course Participant",
-      content:
-        "Thank you for the Course. As they say AI is future actually AI is present now...",
-      rating: 5,
-      avatar: null,
-    },
-    {
-      _id: "2",
-      name: "Pulkita",
-      designation: "GenAI Course Student",
-      content:
-        "I wanted to thank you for your time. I totally loved this free GenAI course...",
-      rating: 5,
-      avatar: null,
-    },
-    {
-      _id: "3",
-      name: "Sakshi",
-      designation: "Training Program Graduate",
-      content:
-        "In today's technical world with cutting-edge technology it's been a great experience...",
-      rating: 5,
-      avatar: null,
-    },
-  ];
+    const fallbackTestimonials = [
+      {
+        _id: "1",
+        name: "Shreyash",
+        designation: "Course Participant",
+        content:
+          "Thank you for the Course. As they say AI is future actually AI is present now...",
+        rating: 5,
+        avatar: null,
+      },
+      {
+        _id: "2",
+        name: "Pulkita",
+        designation: "GenAI Course Student",
+        content:
+          "I wanted to thank you for your time. I totally loved this free GenAI course...",
+        rating: 5,
+        avatar: null,
+      },
+      {
+        _id: "3",
+        name: "Sakshi",
+        designation: "Training Program Graduate",
+        content:
+          "In today's technical world with cutting-edge technology it's been a great experience...",
+        rating: 5,
+        avatar: null,
+      },
+    ];
 
-  try {
-    // ✅ fetch all testimonials
-    const response = await testimonialsAPI.list({ isActive: true });
+    try {
+      // ✅ fetch all testimonials
+      const response = await testimonialsAPI.list({ isActive: true });
 
-    console.log("Testimonials API response:", response.data);
+      console.log("Testimonials API response:", response.data);
 
-    const testimonials =
-      response.data?.data?.testimonials && Array.isArray(response.data.data.testimonials)
-        ? response.data.data.testimonials
-        : [];
+      const testimonials =
+        response.data?.data?.testimonials && Array.isArray(response.data.data.testimonials)
+          ? response.data.data.testimonials
+          : [];
 
-    if (testimonials.length > 0) {
-      setTestimonials(testimonials);
-    } else {
+      if (testimonials.length > 0) {
+        setTestimonials(testimonials);
+      } else {
+        setTestimonials(fallbackTestimonials);
+      }
+    } catch (err) {
+      console.error("Error fetching testimonials:", err);
+      setError("Failed to load testimonials");
       setTestimonials(fallbackTestimonials);
+    } finally {
+      setLoading(false);
     }
-  } catch (err) {
-    console.error("Error fetching testimonials:", err);
-    setError("Failed to load testimonials");
-    setTestimonials(fallbackTestimonials);
-  } finally {
-    setLoading(false);
-  }
-};
-
-
-
+  };
 
   // Auto-rotate testimonials every 5 seconds
   useEffect(() => {
@@ -101,6 +100,9 @@ export function TestimonialsSection() {
       </div>
     );
   };
+
+  // Calculate which dots to show (limit to MAX_DOTS)
+  const dotsToShow = Math.min(testimonials.length, MAX_DOTS);
 
   return (
     <section className="relative py-20 md:py-32 bg-[#0A0A0A] overflow-hidden">
@@ -216,9 +218,9 @@ export function TestimonialsSection() {
               </AnimatePresence>
             </div>
 
-            {/* Navigation Dots */}
-            <div className="flex justify-center gap-3 mt-8">
-              {testimonials.map((_, index) => (
+            {/* Navigation Dots - LIMITED TO MAX_DOTS */}
+            <div className="flex justify-center items-center gap-3 mt-8">
+              {[...Array(dotsToShow)].map((_, index) => (
                 <button
                   key={index}
                   onClick={() => setActiveIndex(index)}
@@ -230,6 +232,11 @@ export function TestimonialsSection() {
                   aria-label={`Go to testimonial ${index + 1}`}
                 />
               ))}
+              {testimonials.length > MAX_DOTS && (
+                <span className="text-gray-500 text-sm ml-2">
+                  {activeIndex + 1}/{testimonials.length}
+                </span>
+              )}
             </div>
 
             {/* Navigation Arrows (Desktop) */}

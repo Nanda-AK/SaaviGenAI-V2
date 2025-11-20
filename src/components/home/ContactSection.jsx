@@ -118,16 +118,14 @@ export default function ContactSection() {
     } rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:border-transparent transition-all`;
 
   return (
-    <section id="contact" className="relative py-20 md:py-32 bg-black overflow-hidden">
+    <section id="contact" className="relative py-20 md:py-10 bg-black overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,255,198,0.05),transparent_70%)]" />
       <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:4rem_4rem]" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-cyan-500/10 border border-cyan-500/30 rounded-full mb-6">
-            <span className="text-cyan-400 text-sm font-medium">Get In Touch</span>
-          </div>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">
+        
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-6">
             <span className="text-white">Ready to Transform with </span>
             <span className="bg-gradient-to-r from-cyan-400 via-teal-400 to-cyan-500 bg-clip-text text-transparent">
               AI?
