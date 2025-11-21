@@ -16,7 +16,7 @@ const courses = [
   {
     title: "Applied LLM",
     files: [
-      { label: "Course Brochure", file: "/pdfs/beyond_course.pdf" },
+      { label: "Course Brochure", file: "/pdfs/Applied_LLM/Brochure_Applied LLM.pdf" },
       { label: "Business Proposal", file: "/pdfs/beyond_proposal.pdf" },
       { label: "Pre & Pro Assessment", file: "/pdfs/beyond_assessment.pdf" },
       { label: "Session Framework", file: "/pdfs/beyond_framework.pdf" },
@@ -25,7 +25,7 @@ const courses = [
   {
     title: "Enterprise LLM Security",
     files: [
-      { label: "Course Brochure", file: "/pdfs/beyond_course.pdf" },
+      { label: "Course Brochure", file: "/pdfs/LLM_Security/Brochure_Enterprise_LLM_Security.pdf" },
       { label: "Business Proposal", file: "/pdfs/beyond_proposal.pdf" },
       { label: "Pre & Pro Assessment", file: "/pdfs/beyond_assessment.pdf" },
       { label: "Session Framework", file: "/pdfs/beyond_framework.pdf" },
