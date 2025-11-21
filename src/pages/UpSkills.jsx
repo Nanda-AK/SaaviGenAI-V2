@@ -7,10 +7,10 @@ const courses = [
   {
     title: "Beyond ChatGPT",
     files: [
-      { label: "Course Brochure", file: "/pdfs/beyond_course.pdf" },
-      { label: "Business Proposal", file: "/pdfs/beyond_proposal.pdf" },
-      { label: "Pre & Pro Assessment", file: "/pdfs/beyond_assessment.pdf" },
-      { label: "Session Framework", file: "/pdfs/beyond_framework.pdf" },
+      { label: "Course Brochure", file: "/pdfs/Beyond_ChatGPT/Brochure_Beyond_ChatGPT.pdf" },
+      { label: "Business Proposal", file: "/pdfs/Beyond_ChatGPT/Business_Proposal_Beyond_ChatGPT.pdf" },
+      { label: "Pre & Pro Assessment", file: "/pdfs/Beyond_ChatGPT/Pre_Pro_AI_Assessment.pdf" },
+      { label: "Session Framework", file: "/pdfs/Beyond_ChatGPT/Session_Framework_Beyond ChatGPT.pdf" },
     ],
   },
   {
